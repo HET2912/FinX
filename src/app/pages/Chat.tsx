@@ -46,9 +46,13 @@ type MessageItem = {
   createdAt: string;
 };
 
-function getInitials(name: string) {
+function getInitials(name?: string) {
+  if (!name) return "?";
+
   return name
+    .trim()
     .split(" ")
+    .filter(Boolean)
     .map((n) => n[0])
     .join("")
     .toUpperCase()
@@ -72,29 +76,31 @@ function avatarColor(id: string) {
     hash = id.charCodeAt(i) + ((hash << 5) - hash);
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
-
 function Avatar({ user, size = 40 }: { user: ChatUser; size?: number }) {
+  const name = user?.name || "Unknown";
+
   if (user.profilePicture) {
     return (
       <img
         src={user.profilePicture}
-        alt={user.name}
+        alt={name}
         style={{ width: size, height: size }}
         className="rounded-full object-cover flex-shrink-0 ring-2 ring-slate-700/60"
       />
     );
   }
+
   return (
     <div
       style={{
         width: size,
         height: size,
-        background: avatarColor(user._id),
+        background: avatarColor(user._id || "x"),
         fontSize: size * 0.35,
       }}
       className="rounded-full flex items-center justify-center flex-shrink-0 font-medium text-white select-none ring-2 ring-slate-700/60"
     >
-      {getInitials(user.name)}
+      {getInitials(name)}
     </div>
   );
 }
@@ -208,24 +214,30 @@ export function Chat() {
   );
 
   const filteredChatUsers = useMemo(() => {
-    const norm = searchTerm.toLowerCase();
+    const norm = (searchTerm || "").toLowerCase();
+
     return chatUsers
-      .filter(
-        (u) =>
-          u.name.toLowerCase().includes(norm) ||
-          u.email?.toLowerCase().includes(norm),
-      )
+      .filter((u) => {
+        const name = (u.name || "").toLowerCase();
+        const email = (u.email || "").toLowerCase();
+
+        return name.includes(norm) || email.includes(norm);
+      })
       .sort((a, b) => {
         const ac = conversationMap.get(a._id);
         const bc = conversationMap.get(b._id);
-        if (ac && bc)
+
+        if (ac && bc) {
           return (
             new Date(bc.lastMessageAt).getTime() -
             new Date(ac.lastMessageAt).getTime()
           );
+        }
+
         if (ac) return -1;
         if (bc) return 1;
-        return a.name.localeCompare(b.name);
+
+        return (a.name || "").localeCompare(b.name || "");
       });
   }, [chatUsers, conversationMap, searchTerm]);
 

@@ -27,6 +27,7 @@ export function GroupExpense() {
   const { user } = useAuth();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [name, setName] = useState("");
+  const [creating, setCreating] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
     groupId: string | null;
@@ -40,11 +41,21 @@ export function GroupExpense() {
 
   const onCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    await createGroup({ name, members: [] });
-    setName("");
-    setIsCreateModalOpen(false);
-  };
 
+    if (!name.trim()) return;
+
+    try {
+      setCreating(true);
+      await createGroup({ name, members: [] });
+
+      setName("");
+      setIsCreateModalOpen(false);
+    } catch (err) {
+      toast.error("Failed to create group");
+    } finally {
+      setCreating(false);
+    }
+  };
   const handleDeleteClick = (groupId: string, groupName: string) => {
     setDeleteModal({ isOpen: true, groupId, groupName });
   };
@@ -255,12 +266,13 @@ export function GroupExpense() {
               </button>
               <button
                 type="submit"
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.98]"
+                disabled={creating}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   background: "linear-gradient(135deg, #7c3aed, #06b6d4)",
                 }}
               >
-                Create Group
+                {creating ? "Creating..." : "Create Group"}
               </button>
             </div>
           </form>
