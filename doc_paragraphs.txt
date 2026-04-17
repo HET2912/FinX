@@ -1,0 +1,883 @@
+001: FAB  FASHION – AN ECOMMERCE PORTAL
+002: Semester – VIII
+003: A PROJECT REPORT
+004: Submitted by
+005: VADNAGARI SHUBHAM MEHULKUMAR
+006: 220280107144
+007: In partial fulfilment for the award of the degree of
+008: BACHELOR OF ENGINEERING
+009: in
+010: Computer Engineering
+011: L. D. COLLEGE OF ENGINEERING
+012: Gujarat Technological University, Ahmedabad
+013: [ 1th Jan 2026 to 3th April 2026]
+014: L.D. COLLEGE OF ENGINEERING
+015: AHMEDABAD, GUJARAT
+016: CERTIFICATE
+017: This is to certify that the project report submitted along with the project entitled Internship & Fab Fashion portal been carried out by Vadnagari Shubham Mehulkumar under my guidance in partial fulfilment for the degree of Bachelor of Engineering in Computer Engineering, 8th Semester of Gujarat Technological University, Ahmedabad during the academic year 2025-26.
+018: Prof. Parth DaveDr. Chirag Thaker
+019: Internal GuideHead of the Department
+020: INTERNSHIP OFFER LETTER
+021: INTERNSHIP COMPLETION CERTIFICATE
+022: PROJECT ID: 733448
+023: L.D. COLLEGE OF ENGINEERING
+024: AHMEDABAD, GUJARAT
+025: DECLARATION
+026: We hereby declare that the Internship / Project report submitted along with the Internship entitled Internship & Fab Fashion Portal submitted in partial fulfilment for the degree of Bachelor of Engineering in Computer Engineering to Gujarat Technological University, Ahmedabad, is a Bonafide record of original project work carried out by me at Impero IT Services under the supervision of Prof. Hitesh Rajput and that no part of this report has been directly copied from any students‟ reports or taken from any other source, without providing due reference.
+027: Name of the StudentSign of Student
+028: Shubham
+029: Vadnagari
+030: PROJECT ID: 733448
+031: ACKNOWLEDGEMENT
+032: I would like to express my sincere gratitude to several individuals for supporting me throughout my internship project. First, I wish to express my sincere gratitude to my Internal Guide, Prof. Parth Dave, for his enthusiasm, patience, insightful comments, helpful information, practical advice, and unceasing ideas that have always helped me tremendously in my project. Without his support and guidance, this project would not have been possible.
+033: I would like to express my endless thanks to my external guide Julie Braganza at Impero IT Services their sincere and dedicated guidance throughout the project development.
+034: I am highly indebted to my institute guide Prof. Parth Dave for the facilities provided to accomplish this internship. Also, I would like to thank my Head of the Department Dr. Chirag Thaker for her constructive criticism throughout my internship. I am extremely grateful to my department staff members and friends who helped me in successful completion of this internship.
+035: Thanks
+036: Vadnagari Shubham Mehulkumar
+037: 220280107144
+038: ABSTRACT
+039: During the development of “Fab Fashion”, an internship and E-commerce web portal, I ventured deep into full-stack web development using the MERN stack (MongoDB, Express.js, React, Node.js). This project aimed to bridge the gap between job seekers and recruiters by offering an intuitive, user-friendly platform that streamlines the job search and hiring process.
+040: My core responsibilities encompassed designing and implementing robust backend APIs with Node.js and Express, managing and modelling complex data structures in MongoDB, and crafting dynamic, responsive user interfaces using React. I ensured seamless communication between the client and server through secure RESTful services, focusing on delivering a smooth and responsive user experience across web and mobile platforms.
+041: “FAB FASHION” empowers users to explore a wide range of trendy fashion products, create and manage personalized profiles, and discover items that match their style preferences and interests. The platform enables customers to browse categories, view detailed product information, and seamlessly place orders. For administrators, the platform provides the ability to manage product listings, categorize items, track inventory, and handle customer orders efficiently, ensuring a smooth and engaging shopping experience.
+042: Throughout the project, I focused heavily on building a scalable, modular architecture, employing clean coding practices and efficient state management. This hands-on experience significantly enhanced my proficiency in JavaScript, React, Node.js, and MongoDB, while also deepening my understanding of full-stack development principles, user authentication flows, and modern software deployment practices.
+043: By the project's conclusion, I had successfully built a feature-rich e-commerce platform that addresses real-world challenges of online fashion shopping, including product discovery, seamless ordering, and efficient management. This project strengthened my confidence and enhanced my ability to develop scalable, production-ready applications using the MERN stack.
+044: List of Figures
+045: Fig No.DescriptionPage
+046: Fig 1.1Company Logo1
+047: Fig 2.1Production Stage6
+048: Fig 3.1Scrum Methodology10
+049: Fig 3.2Gantt Chart12
+050: Fig 4.1Use Case Diagram15
+051: Fig 4.2Activity Diagram17
+052: Fig 4.3Data Flow Diagram (Level 0,1,2)18
+053: Fig 5.1Flowchart23
+054: Fig 5.2Home Page23
+055: Fig 5.3    Product Listing Page24
+056: Fig 5.4Product Details Page24
+057: Fig 5.5User Profile Page25
+058: Fig 5.6Sign In page25
+059: Fig 5.7Login Page26
+060: Fig 5.8Add Product Page (Admin)26
+061: Fig 5.9Manage Orders Page (Admin)28
+062: Fig 5.10Cart Page29
+063: PROJECT ID: 733448
+064: LIST OF TABLES
+065: Table No.Table NamePage
+066: Table 3.1Project/Internship Summary7
+067: Table 5.1Database Schema21
+068: Table 7.1Test Cases33
+069: PROJECT ID: 733448
+070: Abbreviations
+071: IDEIntegrated Development Environment
+072: SQLStructured Query Language
+073: JSJavaScript
+074: HTMLHyper Text Markup Language
+075: CSSCascading Style Sheet
+076: JSPJava Server Pages
+077: DBADatabase Administrator
+078: DBMSDatabase Management System
+079: HRHuman resources
+080: QAQuality Assurance
+081: SMSShort Message Service
+082: UIUser Interface
+083: UX API
+084: User Experience
+085: Application Program Interface
+086: PROJECT ID: 733448
+087: Table of Contents
+088: DeclarationI
+089: AcknowledgementII
+090: AbstractIII
+091: List of FiguresIV
+092: List of TablesV
+093: List of AbbreviationsVI
+094: Table of ContentVII
+095: CHAPTER 1: OVERVIEW OF COMPANY1
+096: Company Introduction1
+097: Different Services2
+098: CHAPTER 2: OVERVIEW OF COMPANY DEPARTMENT5
+099: All Departments5
+100: Technical Specifications in Department5
+101: Sequence of Operators5
+102: Product Stages6
+103: CHAPTER 3: INTRODUCTION TO INTERNSHIP7
+104: Internship Project Summary7
+105: Purpose8
+106: Objective9
+107: Scope9
+108: Technology and Literature Review10
+109: Planning10
+110: Project/Internship Development Approach and Justification10
+111: Roles and Responsibilities11
+112: Group Dependencies11
+113: Scheduling12
+114: PROJECT ID: 733448
+115: CHAPTER 4: SYSTEM ANALYSIS13
+116: Study of Current System13
+117: Weakness Of Current System13
+118: Requirements of New System14
+119: Activity System15
+120: Use Case Diagram15
+121: Activity Diagram17
+122: Data Flow Diagram18
+123: Features of New System19
+124: CHAPTER 5: SYSTEM DESING21
+125: System Design21
+126: Database Design21
+127: Flowchart22
+128: Interface Design23
+129: CHAPTER 6: IMPLEMENTATION30
+130: Implementation Platform30
+131: Admin31
+132: User31
+133: CHAPTER 7: TESTING32
+134: Testing Levels32
+135: Test Cases33
+136: CHAPTER 8: CONCLUSION AND DISCUSSION36
+137: Overall Analysis of Internship36
+138: Problem Encountered and Possible Solutions36
+139: Date of Continuous Evaluation36
+140: PROJECT ID: 733448
+141: Limitations36
+142: Future Enhancement37
+143: Conclusion37
+144: REFERENCES38
+145: PROJECT ID: 733448
+146: CHAPTER 1 – OVERVIEW OF COMPANY
+147: Figure1.1 Company Logo
+148: Company Introduction
+149: Impero is a software development company creating full-fledged smart mobility solutions for your business to make it a recognised brand. Our services include discovering your ideas to designing it and developing it to launching it in the market and ultimately making it a solution that your users will love to use and which will of course top the charts. That is why we term Impero as a tech kingdom. Through its commitment to excellence and innovation,
+150: YOU, WE & IT
+151: Impero is an Italian word which means KINGDOM, denoted by our logo. This empire consists of 3 Identities YOU, WE&IT with our clients on prime position served by us to accomplish their IT requirements. We would be happy to welcome you in our empire as most valued identity.
+152: Gujarat Technical University
+153: 1L. D. College of Engineering
+154: Different Services
+155: Mobile application development
+156: App development services that meet varied sets of requirements, from native application development to hybrid app development; based on your app idea, our UK app developers are ready to launch your app on different platforms and give your stunning idea a fantastic makeover.
+157: iOS app development
+158: Android app development
+159: Flutter app development
+160: React Native app development
+161: Web App Development
+162: Creating web applications for more than 11+ years, we are adept at developing web applications for a variety of industries, providing feature-rich, flawless web apps. Whether you want a Content-Management-System (CMS) or eCommerce web development, at Impero IT, our maestros are great at curating web applications that give your business an upfront.
+163: All-inclusive, if you are looking for enterprise-ready, highly-responsiveness, efficient web applications, connect with our experts and get started!
+164: PWA - Progressive Web Apps
+165: E-Commerce web solutions
+166: CMS development
+167: ERP solution
+168: Custom web development
+169: Web Designing
+170: UI / UX design at Impero IT Services swear by D’s in our approach - Design, Develop & Delight! Every company or business has one goal that is to make their app user-centred! And we exactly do that by designing your product that drives your users to have an excellent user experience! Result? A rise in your customers with your app's seamless experience E – Commerce Development
+171: User Experience (UX)
+172: Your app needs loyal users to top the charts! And for that, along with outstanding features, a beautiful & attractive design is also essential. We are a UI UX design agency that starts each project with thorough research of your app idea, ensuring we excel at understanding your users’ requirements.
+173: Brilliant, easy to use, aesthetically pleasing designs - distinguish a successful app & the app which does not top the charts! Mobile Apps UX design is not only about having beautiful logos or including the latest trends but your users enjoying your app to its fullest.
+174: With our specialised team, we ‘re bound to create perfectly intuitive designs that raise the bar of your app. Because UX designing is all about anticipating what users’ really want in your app.
+175: User Interface (UI)
+176: While UX plays the role of laying the best experience, a good UI design ensures a 97% visually stimulating experience that guides your users to achieve the desired action you want.
+177: And we know exactly how to evoke your users by designing a user interface that is intuitive, brilliant, and especially directed towards providing effective interaction. Throughout our journey, we have crafted 1000+ effortless, amusing interfaces.
+178: We are a UI & UX design studio with a creative team of experts who dig deep into materialising visual strategies and tailoring them into a perfect end product. Understanding your user base is the key here, and we excel in providing a visual solution that your users will love to interact with.
+179: AR/VR designs
+180: At Impero, develop app & web solutions that augment unexciting tasks to an unbelievable exciting journey. With our twists of technology, we deliver solutions that incite excellent user satisfaction!
+181: AR Apps
+182: For every app owner, customer satisfaction is an enthralling process. AR apps have a very interactive experience; it especially appeals to high-end users because it creates computer- enhanced images which makes it look like they are residing in the real world. And by integrating AR that is augmented reality technology in your app, your app is undoubtedly going to be a customer favourite. With our team of experts, we excel in crafting AR-enhanced solutions that make every tedious task a user
+183: favourite. Not only that, we provide customised AR apps that suit your business needs, and your target audience can also adapt to it faster and get an immersive app experience.
+184: VR Apps
+185: With everything going virtual, a virtual reality app for your business is much needed. VR apps take a user to new heightened experience and are a great way to bring your business in front of many users. We craft VR apps that are impressive, highly visualised, and mainly give a real-life feeling. individuals.
+186: Flutter app development
+187: Impero IT is the best choice to hire reliable Flutter developers. Being a renowned Flutter app development company, Impero leverage the many benefits; Flutter offers to create robust, natively compiled apps that can run on Android as well as iOS. Cross-platform development is best suited for startups & businesses looking to reach a larger audience. Based on your professional requirements, you can choose hiring our front-end Flutter experts and empower your business.
+188: IOS app development
+189: Android app development
+190: CHAPTER 2 – OVERVIEW OF THE COMPANY DEPARTMENT
+191: Impero IT services
+192: Impero is a software development company creating full-fledged smart mobility solutions for your business to make it a recognised brand. Our services include discovering your ideas to designing it and developing it to launching it in the market and ultimately making it a solution that your users will love to use and which will of course top the charts
+193: ALL DEPARTMENTS
+194: HR Department
+195: Development Department
+196: Testing Department
+197: TECHNICAL SPECIFICATIONS IN DEPARTMENT
+198: HR Department
+199: Our HR team is committed to finding the best talent and fostering a positive work environment that maximizes employee productivity. They handle everything from recruitment and compensation to training and development.
+200: Development Department
+201: Our development department is comprised of skilled professionals across various specialties, including web development, Android development, and iOS development. We use the latest technologies to create high-quality, user-friendly applications Our testing department plays a vital role in ensuring the quality of your software. They rigorously test all aspects of your application to identify and fix any bugs before it reaches the market.
+202: SEQUENCE OF OPERATORS
+203: Requirement Gathering & Analysis: Our research team gathers your requirements, analyses them, and defines the features to be developed. They also estimate the project's cost and timeline.
+204: Development & Team Allocation: We leverage expert teams like Node js MVC for backend and a modern UI framework for frontend, ensuring a tailored approach for each project.
+205: Testing & Quality Assurance: Once development is complete, our testing team meticulously tests the software to ensure it meets all requirements and functions flawlessly.
+206: PRODUCT STAGES
+207: Fig 2.1 Production Stage
+208: CHAPTER 3: INTRODUCTION TO INTERNSHIP
+209: PROJECT SUMMARY
+210: Table 3.1: Project Summary
+211: Project Title
+212: Internship & Job seeking Portal
+213: Aim
+214: The aim of FAB FASHION is to develop a user-centric, feature-rich e-commerce platform that simplifies the online fashion shopping experience for customers while providing efficient management tools for administrators. It strives to connect users with the latest fashion trends through a seamless and interactive interface where customers can explore products, apply filters, add items to their cart, and complete purchases with ease.At the same time, the platform enables administrators to manage product listings, monitor inventory, and handle orders by updating their status efficiently. The goal is to deliver a smooth, responsive, and engaging shopping experience through a reliable digital environment.
+215: Developed At
+216: Impero IT Services
+217: Project Category
+218: Website
+219: Tools
+220: IDE
+221: Visual Studio code
+222: Languages/Frameworks
+223: React JS,
+224: Node JS, MongoDB, Tailwind css
+225: Third party Api and packages
+226: Duration
+227: 3 Months (January 2026 to March 2026)
+228: PURPOSE
+229: The purpose of FAB FASHION is to provide an intuitive and efficient e-commerce platform where users can browse, filter, and purchase fashion products with ease. It aims to enhance the online shopping experience by offering a structured and user-friendly interface for discovering products, managing carts, and completing secure transactions.
+230: Simplify product management as administrators can effortlessly add products, manage inventory, update order status, and efficiently handle customer orders
+231: • Facilitate a seamless shopping experience by helping users discover fashion products that match their style, preferences, and needs.
+232: • Ensure secure user management with JWT-based authentication, providing
+233: protected access for both customers and administrators.
+234: • Provide a modern UI/UX with a clean and responsive interface, ensuring seamless navigation and an engaging shopping experience across web and mobile platforms.
+235: • Encourage transparency by allowing users to view product details, ratings, and reviews, helping them make informed purchasing decisions
+236: OBJECTIVE
+237: The objective of the web as well as mobile application is to provide flexibility to users by offering all essential online shopping functionalities in a single platform. This includes browsing products, applying filters, managing the cart, and completing purchases seamlessly.
+238: In addition, the application provides an effective system for administrators to add and manage products, track inventory, and monitor customer orders. Administrators can also update order statuses, while users can view product details and reviews to make informed purchasing decisions.
+239: SCOPE
+240: The scope of FAB FASHION is to provide a scalable and user-friendly e-commerce platform that connects users with a wide range of fashion products through seamless browsing and shopping functionalities. It caters to customers by offering features like product search, filtering, cart management, secure checkout, and order tracking.
+241: For administrators, the platform provides capabilities such as product management, inventory control, and order status updates. Designed for both web and mobile platforms, FAB FASHION ensures an accessible, efficient, and engaging shopping experience for users across diverse preferences and needs.
+242: Functional Scope:
+243: User Authentication & Security:
+244: Secure sign-up and login with JWT-based authentication. User-specific Product management to ensure only owners can modify their content.
+245: Product Management Features:
+246: Administrators can add, update, and delete product listings, as well as manage user accounts by updating user details when required. They also have exclusive access to manage customer orders, including updating order statuses.
+247: Customers can browse and explore products, apply filters, add items to their cart, and place orders through a user-friendly interface. Their orders can be managed and tracked through a personalized dashboard. All products are displayed on the home page and are accessible to both logged-in and non-logged-in users for easy browsing.
+248: Future Scope:
+249: Advanced User Interactions Categorization & Tags Admin Dashboard
+250: SEO & Performance Optimization
+251: TECHNOLOGY AND LITERATURE REVIEW
+252: React JS:
+253: Best utilization of React JS functionality for the UI purpose by implementing some level of tailwind css, proper building of each components, Hooks, adding Toaster
+254: MongoDB:
+255: Using MongoDB Atlas, by making clusters on open source platform to manage overall data
+256: Node JS:
+257: Integrating Backend Functionality using NPM packages & Modules, creating controllers, do routing,
+258: Third party library and API :
+259: Use of Cloudinary for File upload purpose and showing it on web, using bootstrap API, etc
+260: PLANNING
+261: Project / Internship Development Approach and Justification
+262: The software development models are the various processes or methodologies that are being selected for the development of the project depending on the project’s aims and goals. There are many development life cycle models that have been developed in order to achieve different required objectives. The models specify the various stages of the process and the order in which they are carried out.
+263: The selection of model has very high impact on the testing that is carried out. It will define the what, where and when of our planned testing, influence regression testing and largely determines which test techniques to use.
+264: According to our project requirements we chose scrum methodology to accomplish project in effective and timely manner.
+265: Scrum is an agile development methodology used in the development of Software based on an iterative and incremental processes. Scrum is adaptable, fast, flexible and effective agile framework that is designed to deliver value to the customer throughout the development of the project. The primary objective of Scrum is to satisfy the customer’s need through an environment of transparency in communication, collective responsibility, and continuous progress. The development starts from a general idea of what needs to be built, elaborating a list of characteristics ordered by priority (product backlog) that the owner of the product wants to obtain
+266: Fig 3.1 Scrum Methodology
+267: The process has as a starting point, a list of objectives/ requirements that make up the project plan. It is the client of the project that prioritizes these objectives considering a balance the
+268: value and the cost thereof, that is how the iterations and consequent deliveries are determined.
+269: On the one hand the market demands quality, fast delivery at lower costs, for which a company must be very agile and flexible in the development of products, to achieve short development cycles that can meet the demand of customers without undermining the quality of the result. It is a very easy methodology to implement and very popular for the quick results it gets.
+270: Scrum methodology is used mainly for software development, but other sectors are also taking advantage of its benefits by implementing this methodology in their organizational models such as sales, marketing, & HR teams etc.
+271: Roles and Responsibilities
+272: Scrum Master
+273: The person who leads the team guiding them to comply with the rules and processes of the methodology. Scrum master manages the reduction of impediments of the project and works with the Product Owner to maximize the ROI. The Scrum Master is in charge of keeping Scrum up to date, providing coaching, mentoring, and training to the teams in case it needs it.
+274: Product Owner
+275: Product is the representative of the stakeholders and customers who use the software. They focus on the business part and is responsible for the ROI of the project. They translate the vision of the project to the team, validate the benefits in stories to be incorporated into the Product Backlog and prioritize them on a regular basis.
+276: Team
+277: A group of professionals with the necessary technical knowledge who develop the project jointly carrying out the stories they commit to at the start of each sprint.
+278: Group Dependencies
+279: Group dependency refers to the reliance of individuals within a group on each other to achieve goals, make decisions, or function effectively. There are several types of group dependency:
+280: Pooled interdependence
+281: Individuals work independently on tasks, and the outcomes are then combined to create the result.
+282: Sequential interdependence
+283: The output of one individual or group becomes the input for another, creating a sequential flow of work.
+284: Reciprocal interdependence
+285: Individuals or groups depend on each other for resources, information, or support to accomplish their tasks.
+286: Comprehensive interdependence
+287: All individuals or groups are highly dependent on each other to achieve common goals, requiring constant communication and coordination.
+288: SCHEDULING
+289: Week
+290: 1
+291: 2
+292: 3
+293: 4
+294: 5
+295: 6
+296: 7
+297: 8
+298: 9
+299: 10
+300: 11
+301: 12
+302: 13
+303: January
+304: February
+305: March
+306: March
+307: Domain Understanding
+308: Future Analysis
+309: Learning Process
+310: Design
+311: Coding and Testing
+312: Documentation
+313: Final Documentation
+314: X`Fig 3.2 Gantt Chart
+315: CHAPTER 4: REQUIREMENT & SYSTEM ANALYSIS
+316: STUDY OF CURRENT SYSTEM
+317: Currently, many e-commerce platforms exist, offering features like product listings, online shopping, and order management. However, most traditional platforms either have cluttered user interfaces, limited administrative control, or lack a personalized and seamless shopping experience.
+318: Existing systems like Amazon, Flipkart, and Myntra provide essential online shopping functionalities, but they often come with limitations such as:
+319: • Limited administrative control over product management and order handling processes.• Overloaded interfaces that can be confusing for first-time users or customers.• Inefficient filtering and search mechanisms, making it harder for users to find relevant fashion products quickly.• Lack of personalization and engaging user experience in some cases.
+320: FAB FASHION aims to address these issues by providing a clean, efficient, and user-friendly e-commerce solution with robust admin control, secure authentication, and a modern shopping experience for both customers and administrators.
+321: WEAKNESS OF CURRENT SYSTEM
+322: 1. Limited Admin Control
+323: • Many platforms provide limited administrative control, restricting efficient management of products, users, and orders.• Lack of centralized tools to easily update product details, manage inventory, or handle order statuses
+324: 2.Poor User Experience & Overloaded Interfaces
+325: • Several e-commerce websites have cluttered layouts, making navigation confusing for users.• Interfaces are not always fully responsive, leading to inconsistent experiences across devices.
+326: 3. Lack of Transparency and Product Insight
+327: • Some platforms offer limited product details, reviews, or ratings.
+328: • Customers often face difficulty in making informed purchase decisions due to insufficient information.
+329: 4. Limited Customization & Flexibility
+330: • Product management and filtering options are often rigid and not adaptable to different user preferences.• Dependence on external integrations for essential features like authentication, payments, or tracking.
+331: 5. Ineffective Search and Filtering
+332: • Users may struggle with irrelevant search results and limited filtering options.• Difficulty in quickly finding products based on category, price range, or preferences.
+333: REQUIREMENT OF NEW SYSTEM
+334: Below are the technical requirements to develop Job Search Portal application
+335: Software Requirements
+336: Operating System: Windows 10
+337: IDE: Eclipse, Android Studio IDE
+338: Application Server: Apache Tomcat 8.5.6
+339: Frameworks and APIs: Spring MVC, Hibernate, Android SDK Framework 10 or higher
+340: Database: MySQL, SQLite Database
+341: Front End: HTML5, CSS3, JavaScript, jQuery
+342: Web Service: RESTful web services
+343: Browser: Chrome or Firefox or Internet Explorer
+344: Emulator: SDK version 3.0 or higher
+345: Hardware Requirements
+346: Processor: Intel core i7
+347: Processor speed: 3.40 GHz
+348: RAM: 8 GB
+349: ACTIVITY SYSTEM
+350: Use Case Diagram
+351: Fig 4.1 Use Case Diagram
+352: Actors:
+353: The Actors of the system are Admin and  Register User.
+354: Use cases:
+355: I have identified a set of use cases based on the functionalities and goals of the application.
+356: • Register Account – This use case denotes a set of actions required for users and administrators to register with the application.
+357: • Login – This use case denotes a set of actions required for users and administrators to log in to the application.
+358: • Manage User Accounts – This use case denotes actions required for administrators to manage user details when necessary.
+359: Add Product – This use case denotes actions required for the administrator to add new products to the platform.
+360: Update/Delete Product – This use case denotes actions required for the administrator to update or remove existing products.
+361: View Products – This use case denotes actions required for users to browse and view all available products.
+362: Search & Filter Products – This use case denotes actions required for users to search and filter products based on categories, price, or preferences.
+363: View Product Details – This use case denotes actions required for users to view detailed information about a specific product.
+364: Add to Cart – This use case denotes actions required for users to add selected products to their cart.
+365: Manage Cart – This use case denotes actions required for users to update or remove items from their cart.
+366: Place Order – This use case denotes actions required for users to place an order for selected products.
+367: Make Payment – This use case denotes actions required for users to complete payment for their orders.
+368: Manage Address – This use case denotes actions required for users to add, update, or change delivery addresses.
+369: Track Orders – This use case denotes actions required for users to track the status of their placed orders.
+370: Add Reviews – This use case denotes actions required for users to write reviews for purchased products.
+371: View Reviews – This use case denotes actions required for users to view reviews and ratings of products.
+372: Activity Diagram
+373: Fig 4.2 Activity diagram
+374: DATA FLOW DIAGRAM
+375: Fig 4.3 Data Flow Diagram
+376: FEATURE OF NEW SYSTEM
+377: User Authentication & Authorization
+378: Sign Up – New users can register with their email and password.
+379: Login – Users can log in using their credentials.
+380: Protected Routes – Users must be logged in to read, add, edit, or delete products.
+381: Logout – Users can securely log out.
+382: Product & Order Management (CRUD)
+383: 1. Read Products
+384: • All users (logged-in or not) can view available fashion products on the Home Page.• Logged-in users can view detailed product information, including price, description, and reviews.
+385: 2. Create Products
+386: • Only administrators can add new products by entering details such as product name, description, category, price, and images.
+387: 3. Edit Products
+388: • Administrators can update existing product listings to modify details like price, description, category, or stock availability.
+389: 4.Delete Products
+390: • Administrators have the authority to remove outdated or unavailable products from the system.
+391: 5. Order Management
+392: • Users can place orders and track their order status through their dashboard.• Administrators can view all orders and update their status (confirm, shipped, delivered, or cancel).
+393: 6. User Management
+394: • Administrators can view and manage user details such as name, email, and roles when required.
+395: 7. User-Specific Dashboard
+396: • Users have access to a personalized dashboard where they can view their orders, track status, and manage addresses.• Administrators have access to a centralized dashboard for managing products, users, and orders.
+397: Third-Party Libraries & Enhancements
+398: React Router – Handles navigation between pages.
+399: Redux Toolkit – Manages authentication and global state.
+400: React Toastify – Provides success/error notifications.
+401: Multer (Backend) – Handles image uploads.
+402: Axios – For making API requests.
+403: Tailwind CSS / Bootstrap – Enhances UI styling.
+404: Security & Performance
+405: Password Hashing – Uses bcryptjs to secure passwords.
+406: JWT Authentication – Secure user login sessions.
+407: Route Protection – Prevents unauthorized access.
+408: Backend Validation – Ensures data integrity.
+409: CHAPTER 5: SYSTEM DESIGN
+410: SYSTEM DESIGN
+411: Systems design is the process of defining the architecture, components, modules, interfaces, and data for a system to satisfy specified requirements. System designs are modelled using UML which is a standard object-oriented analysis and design language. The UML is a collection of diagrams and standard set of notations for specifying and visualizing various aspects such as requirements and design of software systems.
+412: DATABASE DESIGN
+413: The database that is used to design the web application is MongoDB. MongoDB workbench is used to create tables and run queries. In this application development, we have used MongoDB to store employer details, jobseeker details, applied jobs by the applicants, jobs posted by the employer.
+414: Hence, we have identified four tables to achieve desired functionality.
+415: Table 5.1 Database Schema
+416: USER TABLE
+417: Field Name
+418: Data Type
+419: Nullable
+420: Comments
+421: _id
+422: ObjectId
+423: No
+424: Primary Key
+425: userName
+426: String
+427: No
+428: Required
+429: email
+430: String
+431: No
+432: Required + Unique
+433: password
+434: String
+435: No
+436: Hashed (bcrypt)
+437: role
+438: Enum
+439: No
+440: admin / user
+441: createdAt
+442: Date
+443: No
+444: Auto
+445: updatedAt
+446: Date
+447: No
+448: Auto
+449: PRODUCT TABLE
+450: Field Name
+451: Data Type
+452: Nullable
+453: Comments
+454: _id
+455: ObjectId
+456: No
+457: Primary Key
+458: image
+459: String
+460: No
+461: Product image URL (Cloudinary)
+462: title
+463: String
+464: No
+465: Product name/title
+466: description
+467: String
+468: Yes
+469: Product description
+470: category
+471: String
+472: No
+473: Product category (men, women, etc.)
+474: brand
+475: String
+476: No
+477: Brand name
+478: price
+479: Number
+480: No
+481: Original price
+482: salePrice
+483: Number
+484: Yes
+485: Discounted price
+486: totalStock
+487: Number
+488: No
+489: Available stock
+490: createdAt
+491: Date
+492: No
+493: Creation timestamp
+494: updatedAt
+495: Date
+496: No
+497: Last updated timestamp
+498: __v
+499: Number
+500: Yes
+501: MongoDB version key
+502: PRODUCT REVIEW TABLE
+503: Field Name
+504: Data Type
+505: Nullable
+506: Comments
+507: _id
+508: ObjectId
+509: No
+510: Primary Key
+511: productId
+512: String
+513: No
+514: Reference to Product ID
+515: userId
+516: String
+517: No
+518: Reference to User ID
+519: userName
+520: String
+521: No
+522: Name of the user
+523: reviewMessage
+524: String
+525: Yes
+526: Review text given by user
+527: reviewValue
+528: Number
+529: No
+530: Rating (e.g., 1 to 5)
+531: createdAt
+532: Date
+533: No
+534: Review creation timestamp
+535: updatedAt
+536: Date
+537: No
+538: Last updated timestamp
+539: __v
+540: Number
+541: Yes
+542: MongoDB version key
+543: ORDER TABLE
+544: Field Name
+545: Data Type
+546: Nullable
+547: Comments
+548: _id
+549: ObjectId
+550: No
+551: Primary Key
+552: userId
+553: String
+554: No
+555: Reference to User ID
+556: cartId
+557: String
+558: No
+559: Reference to Cart ID
+560: cartItems
+561: Array
+562: No
+563: List of products in the order
+564: addressInfo
+565: Object
+566: No
+567: Shipping address details
+568: orderStatus
+569: String
+570: No
+571: Order status (pending, delivered, cancelled)
+572: paymentMethod
+573: String
+574: No
+575: Payment method (e.g., PayPal)
+576: paymentStatus
+577: String
+578: No
+579: Payment status (pending, completed)
+580: totalAmount
+581: Number
+582: No
+583: Total order amount
+584: orderDate
+585: Date
+586: No
+587: Order placed date
+588: orderUpdateDate
+589: Date
+590: No
+591: Last order update date
+592: paymentId
+593: String
+594: Yes
+595: Payment transaction ID
+596: payerId
+597: String
+598: Yes
+599: Payer ID from payment gateway
+600: __v
+601: Number
+602: Yes
+603: MongoDB version key
+604: CART TABLE
+605: Field Name
+606: Data Type
+607: Nullable
+608: Comments
+609: _id
+610: ObjectId
+611: No
+612: Primary Key
+613: userId
+614: String
+615: No
+616: Reference to User ID
+617: items
+618: Array
+619: No
+620: List of products in the cart
+621: createdAt
+622: Date
+623: No
+624: Cart creation timestamp
+625: updatedAt
+626: Date
+627: No
+628: Last updated timestamp
+629: __v
+630: Number
+631: Yes
+632: MongoDB version key
+633: ADDRESS TABLE
+634: Field Name
+635: Data Type
+636: Nullable
+637: Comments
+638: _id
+639: ObjectId
+640: No
+641: Primary Key
+642: userId
+643: String
+644: No
+645: Reference to User ID
+646: address
+647: String
+648: No
+649: Street address
+650: city
+651: String
+652: No
+653: City name
+654: pincode
+655: String
+656: No
+657: Postal code
+658: phone
+659: String
+660: No
+661: Contact number
+662: notes
+663: String
+664: Yes
+665: Additional delivery instructions
+666: createdAt
+667: Date
+668: No
+669: Address creation timestamp
+670: updatedAt
+671: Date
+672: No
+673: Last updated timestamp
+674: __v
+675: Number
+676: Yes
+677: MongoDB version key
+678: When a user registers with the application, their details are stored in the User table. When an administrator adds new products, the application stores the product details in the Product table.
+679: When users browse or search for products, the application queries the database to retrieve relevant items from the Product table based on search criteria and filters. When a user adds items to the cart, the selected products are stored in the Cart table.
+680: During checkout, the application retrieves cart and address details, processes the payment, and stores the order information in the Order table. Users can track their orders, while administrators can view and update order statuses, which are reflected in the database.
+681: Additionally, users can provide reviews for purchased products, and these are stored in the Review table. Address details added by users are maintained in the Address table and used during order placement.
+682: FLOWCHART
+683: Fig 5.1 : Flow chart of Project
+684: INTERFACE DESIGN
+685: Home Page
+686: Login or Register Page
+687: Upload Home Page Image (Admin)
+688: Add Product Page (Admin)
+689: Change OrderStatus (Admin)
+690: Change OrderStatus (Admin)
+691: Home Page (User)
+692: Home Page (User)
+693: Cart Modal (User)
+694: Order Page (User)
+695: CHAPTER 6 : IMPLEMENTATION
+696: IMPLEMENTATION PLATFORM
+697: Visual Studio
+698: Visual Studio is a comprehensive integrated development environment (IDE) developed by Microsoft. It offers advanced features for code editing, debugging, project management, version control integration, testing, and performance profiling. Visual Studio is available in different editions, including Community, Professional, and Enterprise, catering to various developer needs. It supports development for multiple platforms and seamlessly integrates with other Microsoft development tools and services, facilitating end-to-end application development and deployment workflows.
+699: Print statement debugging is a thing of the past
+700: Debug code right from the editor. Launch or attach to your running apps and debug with break points, call stacks, and an interactive console.
+701: Git commands built-in
+702: Working with Git and other SCM providers has never been easier. Review different, stage files, and make commits right from the editor. Push and pull from any hosted SCM service.
+703: FAB FASHION is a web-based e-commerce application that enhances the way users shop for fashion products online. It provides a seamless platform where customers can browse products, apply filters, add items to their cart, and place orders.
+704: The application also enables administrators to efficiently manage products, users, and orders. It offers a flexible and user-friendly environment accessible across desktops as well as portable devices like smartphones and tablets.
+705: The modules implemented in the FAB FASHION system are:• Admin• User (Customer)
+706: 6.2 Admin
+707: The Admin module provides various management functionalities. Administrators are responsible for maintaining the overall system.
+708: •Admin can add , update and delete Products.
+709: •Admins can manage product categories, pricing, and stock availability.
+710: • Admins can view all orders placed by users.
+711: • Admins can update order status (confirm, shipped, delivered, cancel).
+712: • Admins can manage user details when required.
+713: 6.3 User (Customer)
+714: Users (customers) can perform various shopping-related activities on the platform.
+715: • Users can register and create an account by providing details such as username, email, and password, which are stored in the User table of the MongoDB database.
+716: • Once registered, users can browse products, apply filters, and view detailed product information.
+717: • Users can add products to their cart, manage cart items, and proceed to checkout.
+718: • During checkout, users can add or select delivery addresses, which are stored in the Address table.
+719: • Users can place orders and make payments using available payment methods. All order details are stored in the Order table.
+720: • Users can track their orders and view order history through their dashboard.
+721: • Users can also provide reviews and ratings for products, which are stored in the Review table.
+722: CHAPTER 7: TESTING
+723: Testing is a process of executing a program with the intent of finding bugs that makes the application fail to meet the expected behaviour. Regardless of the development methodology, the goal of testing is to make sure that what is created does what it is supposed to do. Testing plays a critical role for assuring quality and reliability of the software. I have included testing as a part of development process. The test cases should be designed with maximum possibilities of finding the errors or bugs. Various level of testing are as follows.
+724: Testing Levels
+725: Unit testing: Unit testing tests the functionality of individual units of source code. It is the smallest component of a testable software that works in isolation with other parts of the code. I have done unit testing for various individual components of the source code to uncover errors within the boundary of the application.
+726: Integration testing: Integration testing focuses on the design and construction of the software. Here the individual components that are tested using unit tests are combined and tested as a group. Its primary purpose is to expose the defects associated with the interfacing of modules. It checks if the modules perform the desired functionality when integrated together.
+727: System testing: System testing is performed on a completely integrated system to see if it meets the requirements.
+728: Regression testing: Regression testing aims at verifying the functionality of the software that is previously tested and to which changes are made. It is to ensure the old software still works with new changes.
+729: Acceptance testing: Acceptance testing is conducted to verify if the system compliance the business requirements.
+730: Adhering to the levels of testing, Unit testing is performed on individual components of the system ensuring the expected behaviour. Later, I have integrated various components together and performed Integration testing. Once the integration testing is done, I have performed System testing and ensured the application works as per the requirements. Finally, acceptance testing is performed to check if the client accepts the system.
+731: Test Cases
+732: A test case is a set of rules or conditions to check if the system or one of its features works in accordance to the requirement. It is a document with a set of details which includes, set of test data, expected results, actual results, environment information and soon.
+733: I have designed and executed a few test cases to check if the application meets the functional requirements.
+734: Below are the test cases for the Fab Fashion  web application.
+735: TEST MODULE
+736: TEST CASE
+737: EXPECTED RESULT
+738: TEST RESULT
+739: ADMIN
+740: Provide valid login credentials
+741: Admin successfully logged in and redirected to dashboard
+742: PASS
+743: ADMIN
+744: Enters invalid login credentials
+745: Error message displayed
+746: PASS
+747: ADMIN
+748: Add new product with valid details
+749: Product successfully added to the system
+750: PASS
+751: ADMIN
+752: Add product with missing details
+753: Prompts to fill all required fields
+754: PASS
+755: ADMIN
+756: Update product details
+757: Product details updated successfully
+758: PASS
+759: ADMIN
+760: Delete product
+761: Product removed from the system
+762: PASS
+763: ADMIN
+764: View all orders
+765: Displays list of all customer orders
+766: PASS
+767: ADMIN
+768: Update order status
+769: Order status updated (confirmed/shipped/delivered)
+770: PASS
+771: USER
+772: Provide details for registration
+773: User successfully registered
+774: PASS
+775: USER
+776: Enters invalid login credentials
+777: Error message displayed
+778: PASS
+779: USER
+780: Browse products
+781: Displays list of available products
+782: PASS
+783: USER
+784: Apply filters on products
+785: Filtered products displayed correctly
+786: PASS
+787: USER
+788: Add product to cart
+789: Product added to cart successfully
+790: PASS
+791: USER
+792: Remove product from cart
+793: Product removed from cart
+794: PASS
+795: USER
+796: Place order
+797: Order placed successfully
+798: PASS
+799: USER
+800: Make payment
+801: Payment processed successfully
+802: PASS
+803: USER
+804: Track order
+805: Displays current order status
+806: PASS
+807: USER
+808: Add review for product
+809: Review submitted successfully
+810: PASS
+811: The test cases for the android application are as follows.
+812: Test Objectives: Navigation from Splash screen to User screen
+813: TEST CONDITION
+814: INPUT SPECIFICATION
+815: OUTPUT SPECIFICATION
+816: PASS/FAIL
+817: The user is currently on the Splash screen
+818: User enters credentials and clicks on login button
+819: Directs to Home (Product Listing) screen
+820: PASS
+821: Table 2-Test Case for navigation to User screen
+822: Test Objectives: Navigation from Home (Product Listing) Screen to Product Details Screen
+823: TEST CONDITION
+824: INPUT SPECIFICATION
+825: OUTPUT SPECIFICATION
+826: PASS/FAIL
+827: The user is currently on the Home (Product Listing) screen
+828: User clicks on a particular product (View Details)
+829: Directs to Product Details screen
+830: PASS
+831: Table 3-Test Case for navigation to Product details screen
+832: Test Objectives:  Successfully places an order
+833: TEST CONDITION
+834: INPUT SPECIFICATION
+835: OUTPUT SPECIFICATION
+836: PASS/FAIL
+837: The user is currently on the Product Details page
+838: User clicks on the “Add to Cart” and proceeds to checkout to place order
+839: Prompts a message as “Order placed successfully”
+840: PASS
+841: Table 4-Test Case for place order
+842: Test Objectives: User checks for placed orders
+843: TEST CONDITION
+844: INPUT SPECIFICATION
+845: OUTPUT SPECIFICATION
+846: PASS/FAIL
+847: The user is currently on the Home page
+848: User clicks on “My Orders” tab
+849: Lists all the orders placed by the user
+850: PASS
+851: Table 5-Test Case for listing orders
+852: CHAPTER 8: CONCLUSION AND DISCUSSION
+853: OVERALL ANALYSIS OF INTERNSHIP
+854: Since the very first day of internship, I learned a lot of new things from the respected industry guides and fellow interns.
+855: First, I started from basics of HTML, CSS, JavaScript, Node JS.
+856: Then learned Scrum methodology.
+857: Overview of MVC – Entity Frame Work is given.
+858: Tailwind css overview is also given.
+859: Project work is assigned.
+860: Project work is completed and report is prepared.
+861: PROBLEM ENCOUNTERED AND POSSIBLE SOLUTIONS
+862: Problem Encountered:
+863: The website interface might not be intuitive or user-friendly.
+864: Users may require separate installations for body measurement functionalities. Possible Solutions:
+865: Revamp the website interface to prioritize user-friendliness and responsiveness.
+866: Integrate body measurement features seamlessly within the platform, eliminating the need for separate installations.
+867: DATE OF CONTINUES EVALUATION
+868: February 01, 2026
+869: February 29, 2026
+870: March 20, 2026
+871: LIMITATIONS
+872: Limited physical examination capabilities.
+873: Potential challenges with connectivity in remote areas.
+874: Dependence on user's technological proficiency for effective use.
+875: FUTURE ENHANCEMENT
+876: Integration of AI for enhanced diagnostics.
+877: Expansion of services to include specialist consultations.
+878: Implementation of wearable technology for remote patient monitoring.
+879: CONCLUSION:
+880: FAB FASHION serves as a modern and efficient e-commerce platform, enhancing the online shopping experience by connecting users with a wide range of fashion products. By leveraging the MERN stack (MongoDB, Express.js, React.js, and Node.js), the platform delivers a responsive, scalable, and user-friendly experience for both web and mobile users. It provides customers with the flexibility to explore products, apply filters, manage their cart, and place orders seamlessly, while offering administrators full control over product management, user management, and order processing.
+881: The application has successfully met all the functional and non-functional requirements defined during the planning and requirement gathering phase. Through this project, I gained hands-on experience in full-stack development using modern web technologies and implemented best practices in authentication, data handling, and UI/UX design. Working on FAB FASHION has strengthened my skills in the MERN stack and enhanced my understanding of building real-world e-commerce applications from end to end, ultimately boosting my confidence in full-stack development and project execution.
+882: REFERENCES:
+883: Web Siteshttps://www.myntra.com https://www.ajio.com https://www.flipkart.com https://www.amazon.in https://www.meesho.com https://www.nykaafashion.com
