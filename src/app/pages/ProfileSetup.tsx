@@ -12,8 +12,6 @@ import {
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { countries, defaultCountryIso } from "../lib/countries";
-import Logo from "../../../../FinX_Logo.png";
-import bgImage from "../../../../Bg.png";
 
 const incomeSourceOptions = [
   { value: "salary", label: "Salary" },
@@ -105,7 +103,7 @@ export function ProfileSetup() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url(${bgImage})`,
+          backgroundImage: "/bg.png",
           // filter: "blur(1px)",
           transform: "scale(1.05)",
         }}
@@ -120,7 +118,7 @@ export function ProfileSetup() {
           {/* Logo inside card */}
           <div className="flex justify-center mb-6">
             <img
-              src={Logo}
+              src="/FinX_Logo.png"
               alt="Finx Logo"
               className="h-10 w-auto object-contain"
             />

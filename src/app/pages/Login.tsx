@@ -3,8 +3,6 @@ import { Link, useNavigate } from "react-router";
 import { Button } from "../components/ui/Button";
 import { Sparkles, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
-import Logo from "../../../../FinX_Logo.png";
-import bgImage from "../../../../Bg.png";
 
 export function Login() {
   const navigate = useNavigate();
@@ -38,7 +36,7 @@ export function Login() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url(${bgImage})`,
+          backgroundImage: "/bg.png",
           // filter: "blur(1px)",
           transform: "scale(1.05)",
         }}
@@ -53,7 +51,7 @@ export function Login() {
           {/* Logo inside card */}
           <div className="flex justify-center mb-6">
             <img
-              src={Logo}
+              src="/FinX_Logo.png"
               alt="Finx Logo"
               className="h-10 w-auto object-contain"
             />

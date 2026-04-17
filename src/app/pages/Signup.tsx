@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
-import Logo from "../../../../FinX_Logo.png";
-import bgImage from "../../../../Bg.png";
 
 export function Signup() {
   const navigate = useNavigate();
@@ -49,7 +47,7 @@ export function Signup() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url(${bgImage})`,
+          backgroundImage: "/bg.png",
           // filter: "blur(1px)",
           transform: "scale(1.05)",
         }}
@@ -64,7 +62,7 @@ export function Signup() {
           {/* Logo inside card */}
           <div className="flex justify-center mb-6">
             <img
-              src={Logo}
+              src="/FinX_Logo.png"
               alt="Finx Logo"
               className="h-10 w-auto object-contain"
             />

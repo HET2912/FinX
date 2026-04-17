@@ -15,7 +15,6 @@ import {
 import { useAuth } from "../../contexts/AuthContext";
 import { useFinance } from "../../contexts/FinanceContext";
 import { useUI } from "../../contexts/UIContext";
-import logo from "../../../../../FinX_Logo.png";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -61,7 +60,7 @@ export function Sidebar() {
         >
           <div className="h-9 w-full flex items-center">
             <img
-              src={logo}
+              src="/FinX_Logo.png"
               alt="Finx Logo"
               className="
       h-full
