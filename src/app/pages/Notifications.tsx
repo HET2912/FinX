@@ -148,46 +148,52 @@ export function Notifications() {
     <MainLayout>
       <div className="space-y-6 max-w-4xl mx-auto px-1">
         {/* ── Header ──────────────────────────────────────────────── */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-          <div>
-            <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest mb-1">
-              Stay Updated
-            </p>
-            <h1 className="text-3xl font-bold text-white tracking-tight">
-              Notifications
-            </h1>
-            <p className="text-slate-400 text-sm mt-1 flex items-center gap-2">
-              {unreadCount > 0 ? (
-                <>
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500" />
-                  </span>
-                  {unreadCount} unread
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  All caught up!
-                </>
-              )}
-            </p>
+        <div className="space-y-2">
+          {/* Row 1: Heading + Button */}
+          <div className="flex flex-row items-center justify-between gap-3">
+            <div>
+              <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest mb-1">
+                Stay Updated
+              </p>
+              <h1 className="text-3xl font-bold text-white tracking-tight">
+                Notifications
+              </h1>
+            </div>
+
+            {unreadCount > 0 && (
+              <Button
+                variant="secondary"
+                onClick={handleMarkAllAsRead}
+                className="inline-flex items-center gap-1.5 bg-slate-800/60 border border-slate-700/60 text-slate-300 hover:bg-slate-700/60 hover:text-white transition-all flex-shrink-0"
+              >
+                <CheckCheck className="w-4 h-4" />
+                <span className="hidden xs:inline">Mark all read</span>
+                <span className="xs:hidden">Read all</span>
+              </Button>
+            )}
           </div>
 
-          {unreadCount > 0 && (
-            <Button
-              variant="secondary"
-              onClick={handleMarkAllAsRead}
-              className="inline-flex items-center gap-1.5 bg-slate-800/60 border border-slate-700/60 text-slate-300 hover:bg-slate-700/60 hover:text-white transition-all"
-            >
-              <CheckCheck className="w-4 h-4" />
-              Mark all read
-            </Button>
-          )}
+          {/* Row 2: Description paragraph with unread count */}
+          <p className="text-slate-400 text-sm flex items-center gap-2">
+            {unreadCount > 0 ? (
+              <>
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500" />
+                </span>
+                {unreadCount} unread notification{unreadCount !== 1 ? "s" : ""}
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                All caught up! No new notifications
+              </>
+            )}
+          </p>
         </div>
 
         {/* ── Notifications List ──────────────────────────────────── */}
-        <div className="space-y-2">
+        <div className="space-y-2 pt-4">
           {notifications.map((notification) => {
             const IconComponent = getIcon(notification.type);
             const color = getColor(notification.type);
@@ -354,6 +360,164 @@ export function Notifications() {
           </div>
         )}
       </div>
+
+      {/* ── Responsive overrides for mobile (max-width: 640px) ── */}
+      <style>{`
+      /* Custom breakpoint for extra small screens */
+@media (min-width: 480px) {
+  .xs\:inline {
+    display: inline !important;
+  }
+}
+@media (max-width: 479px) {
+  .xs\:hidden {
+    display: none !important;
+  }
+}
+        @media (max-width: 640px) {
+          /* Container spacing */
+          .space-y-6 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+          }
+          .space-y-2 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+          }
+          .gap-3 {
+            gap: 0.5rem;
+          }
+          .gap-2 {
+            gap: 0.25rem;
+          }
+          .gap-1\\.5 {
+            gap: 0.125rem;
+          }
+          .gap-1 {
+            gap: 0.125rem;
+          }
+          
+          /* Padding adjustments */
+          .p-4 {
+            padding: 0.625rem;
+          }
+          .p-12 {
+            padding: 1.5rem;
+          }
+          .p-1\\.5 {
+            padding: 0.25rem;
+          }
+          .px-6 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+          }
+          .pt-2 {
+            padding-top: 0.25rem;
+          }
+          
+          /* Margin adjustments */
+          .mb-2 {
+            margin-bottom: 0.25rem;
+          }
+          .mb-1 {
+            margin-bottom: 0.125rem;
+          }
+          .mt-1\\.5 {
+            margin-top: 0.125rem;
+          }
+          .mt-1 {
+            margin-top: 0.125rem;
+          }
+          .mt-0\\.5 {
+            margin-top: 0.0625rem;
+          }
+          .mr-1 {
+            margin-right: 0.125rem;
+          }
+          
+          /* Typography scaling */
+          .text-3xl {
+            font-size: 1.5rem;
+            line-height: 1.875rem;
+          }
+          .text-sm {
+            font-size: 0.75rem;
+            line-height: 1rem;
+          }
+          .text-xs {
+            font-size: 0.625rem;
+            line-height: 0.875rem;
+          }
+          .text-\\[10px\\] {
+            font-size: 0.5rem;
+          }
+          
+          /* Icon sizing */
+          .w-10 {
+            width: 1.75rem;
+          }
+          .h-10 {
+            height: 1.75rem;
+          }
+          .w-8 {
+            width: 1.25rem;
+          }
+          .h-8 {
+            height: 1.25rem;
+          }
+          .w-5 {
+            width: 0.875rem;
+          }
+          .h-5 {
+            height: 0.875rem;
+          }
+          .w-4 {
+            width: 0.75rem;
+          }
+          .h-4 {
+            height: 0.75rem;
+          }
+          .w-3\\.5 {
+            width: 0.75rem;
+          }
+          .h-3\\.5 {
+            height: 0.75rem;
+          }
+          .w-2 {
+            width: 0.375rem;
+          }
+          .h-2 {
+            height: 0.375rem;
+          }
+          .w-1 {
+            width: 0.125rem;
+          }
+          .h-1 {
+            height: 0.125rem;
+          }
+          
+          /* Border radius */
+          .rounded-2xl {
+            border-radius: 0.75rem;
+          }
+          .rounded-xl {
+            border-radius: 0.5rem;
+          }
+          .rounded-lg {
+            border-radius: 0.375rem;
+          }
+          .rounded-full {
+            border-radius: 9999px;
+          }
+          
+          /* Notification card specific */
+          .line-clamp-2 {
+            -webkit-line-clamp: 2;
+          }
+        }
+      `}</style>
     </MainLayout>
   );
 }

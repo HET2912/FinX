@@ -21,46 +21,11 @@ export function TopNavbar() {
           <Menu className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
         </button>
 
-        {/* Search - with animated focus glow */}
         {/* Search - with flex container for icon + input */}
         <div className="relative flex-1 group">
           {/* Focus glow effect */}
           <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-violet-600/20 to-cyan-400/20 opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-500 -z-10" />
 
-          {/* Flex container for icon and input */}
-          <div
-            className="flex items-center gap-3 
-  bg-[#0F172A] 
-  border border-[#2E3A59] 
-  rounded-lg px-4 py-2.5 
-  transition-all duration-200 ease-out
-  focus-within:ring-2 focus-within:ring-[#7C3AED]/25
-  focus-within:border-[#7C3AED]
-  hover:border-[#6366F1]
-"
-          >
-            <Search
-              className="
-    w-4 h-4 
-    text-[#6B7280] 
-    transition-colors duration-200 
-    flex-shrink-0
-    group-focus-within:text-[#7C3AED]
-  "
-            />
-
-            <input
-              type="text"
-              placeholder="Search transactions, categories..."
-              className="
-      w-full bg-transparent 
-      border-none outline-none 
-      text-[#F1F5F9] 
-      placeholder-[#6B7280] 
-      text-sm font-medium
-    "
-            />
-          </div>
         </div>
       </div>
 
@@ -120,6 +85,132 @@ export function TopNavbar() {
           Logout
         </button>
       </div>
+
+      {/* ── Responsive overrides for mobile (max-width: 640px) ── */}
+      <style>{`
+        @media (max-width: 640px) {
+          /* Header sizing */
+          .h-20 {
+            height: 3.5rem;
+          }
+          .px-4 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+          }
+          .gap-4 {
+            gap: 0.5rem;
+          }
+          .gap-3 {
+            gap: 0.375rem;
+          }
+          
+          /* Hamburger button */
+          .w-10 {
+            width: 2rem;
+          }
+          .h-10 {
+            height: 2rem;
+          }
+          
+          /* Search container */
+          .px-4 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+          }
+          .py-2\\.5 {
+            padding-top: 0.375rem;
+            padding-bottom: 0.375rem;
+          }
+          .gap-3 {
+            gap: 0.375rem;
+          }
+          
+          /* Icon sizing */
+          .w-4 {
+            width: 0.75rem;
+          }
+          .h-4 {
+            height: 0.75rem;
+          }
+          .w-5 {
+            width: 0.875rem;
+          }
+          .h-5 {
+            height: 0.875rem;
+          }
+          .w-8 {
+            width: 1.25rem;
+          }
+          .h-8 {
+            height: 1.25rem;
+          }
+          .w-11 {
+            width: 2rem;
+          }
+          .h-11 {
+            height: 2rem;
+          }
+          
+          /* Typography */
+          .text-sm {
+            font-size: 0.75rem;
+            line-height: 1rem;
+          }
+          .text-xs {
+            font-size: 0.625rem;
+            line-height: 0.875rem;
+          }
+          .text-\\[11px\\] {
+            font-size: 0.5625rem;
+          }
+          
+          /* Notification badge */
+          .min-w-\\[22px\\] {
+            min-width: 1rem;
+          }
+          .h-\\[22px\\] {
+            height: 1rem;
+          }
+          .px-1\\.5 {
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+          }
+          .-top-1\\.5 {
+            top: -0.25rem;
+          }
+          .-right-1\\.5 {
+            right: -0.25rem;
+          }
+          
+          /* Profile section (hidden on mobile anyway, but adjusted if ever shown) */
+          .px-3 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+          }
+          .py-1\\.5 {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+          }
+          
+          /* Logout button */
+          .px-2 {
+            padding-left: 0.375rem;
+            padding-right: 0.375rem;
+          }
+          .py-1 {
+            padding-top: 0.125rem;
+            padding-bottom: 0.125rem;
+          }
+          
+          /* Border radius adjustments */
+          .rounded-xl {
+            border-radius: 0.5rem;
+          }
+          .rounded-lg {
+            border-radius: 0.375rem;
+          }
+        }
+      `}</style>
     </header>
   );
 }

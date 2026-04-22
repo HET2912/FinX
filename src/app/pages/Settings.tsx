@@ -12,6 +12,7 @@ import {
   Camera,
   Shield,
   Trash2,
+  Loader2,
 } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
@@ -97,6 +98,12 @@ export function Settings() {
     },
   });
 
+  // Loading states
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isSavingPreferences, setIsSavingPreferences] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
   useEffect(() => {
     setProfileData({
       name: user?.name || "",
@@ -136,6 +143,8 @@ export function Settings() {
       toast.error("Please enter a valid phone number");
       return;
     }
+
+    setIsUpdatingProfile(true);
     try {
       await updateProfile({
         name: profileData.name,
@@ -149,6 +158,8 @@ export function Settings() {
           err?.response?.data?.message ||
           "Failed to update profile",
       );
+    } finally {
+      setIsUpdatingProfile(false);
     }
   };
 
@@ -166,6 +177,8 @@ export function Settings() {
       toast.error("Passwords do not match");
       return;
     }
+
+    setIsChangingPassword(true);
     try {
       const response = await api.patch("/users/change-password", {
         currentPassword: passwordData.current,
@@ -179,11 +192,15 @@ export function Settings() {
           err?.response?.data?.message ||
           "Failed to change password",
       );
+    } finally {
+      setIsChangingPassword(false);
     }
   };
 
   const handleSavePreferences = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    setIsSavingPreferences(true);
     try {
       await updateProfile({ preferredCurrency: preferences.currency });
       localStorage.setItem(
@@ -201,12 +218,16 @@ export function Settings() {
           err?.response?.data?.message ||
           "Failed to save preferences",
       );
+    } finally {
+      setIsSavingPreferences(false);
     }
   };
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    setIsUploadingAvatar(true);
     try {
       await uploadAvatar(file);
       toast.success("Profile photo updated");
@@ -217,25 +238,35 @@ export function Settings() {
           "Failed to update profile photo",
       );
     } finally {
+      setIsUploadingAvatar(false);
       e.target.value = "";
     }
   };
 
   return (
     <MainLayout>
-      <div className="space-y-6 max-w-5xl mx-auto">
+      <div className="space-y-6 max-w-5xl mx-auto px-1">
         {/* Header */}
-        <div className="pb-2">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-violet-100 to-cyan-200 bg-clip-text text-transparent">
-            Settings
-          </h1>
-          <p className="text-slate-500 mt-1 text-sm">
-            Manage your account and preferences
+        <div className="space-y-2">
+          {/* Row 1: Heading */}
+          <div className="flex flex-row items-center justify-between gap-3">
+            <div>
+              <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest mb-1">
+                Account & Preferences
+              </p>
+              <h1 className="text-3xl font-bold text-white tracking-tight">
+                Settings
+              </h1>
+            </div>
+          </div>
+
+          {/* Row 2: Description paragraph */}
+          <p className="text-slate-400 text-sm">
+            Manage your account details, security, and application preferences
           </p>
         </div>
-
         {/* 2x2 Grid with custom pairing */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
           {/* Row 1: Profile & Notifications */}
           <SectionCard>
             <SectionHeader
@@ -248,7 +279,11 @@ export function Settings() {
               {/* Avatar row */}
               <div className="flex items-center gap-5 pb-1">
                 <div className="relative shrink-0">
-                  {user?.profilePicture ? (
+                  {isUploadingAvatar ? (
+                    <div className="w-16 h-16 rounded-full flex items-center justify-center bg-slate-800 ring-2 ring-white/10">
+                      <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
+                    </div>
+                  ) : user?.profilePicture ? (
                     <img
                       src={user.profilePicture}
                       alt="avatar"
@@ -267,13 +302,18 @@ export function Settings() {
                   <button
                     type="button"
                     onClick={() => avatarInputRef.current?.click()}
-                    className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center transition-colors"
+                    disabled={isUploadingAvatar}
+                    className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{
                       background: "#1e2535",
                       border: "1px solid rgba(255,255,255,0.12)",
                     }}
                   >
-                    <Camera className="w-3 h-3 text-slate-300" />
+                    {isUploadingAvatar ? (
+                      <Loader2 className="w-3 h-3 text-slate-300 animate-spin" />
+                    ) : (
+                      <Camera className="w-3 h-3 text-slate-300" />
+                    )}
                   </button>
                 </div>
                 <div>
@@ -293,6 +333,7 @@ export function Settings() {
                   accept="image/*"
                   className="hidden"
                   onChange={handleAvatarChange}
+                  disabled={isUploadingAvatar}
                 />
               </div>
 
@@ -305,6 +346,7 @@ export function Settings() {
                   onChange={(e) =>
                     setProfileData({ ...profileData, name: e.target.value })
                   }
+                  disabled={isUpdatingProfile}
                 />
                 <Input
                   label="Email"
@@ -314,6 +356,7 @@ export function Settings() {
                   onChange={(e) =>
                     setProfileData({ ...profileData, email: e.target.value })
                   }
+                  disabled={isUpdatingProfile}
                 />
               </div>
 
@@ -328,17 +371,26 @@ export function Settings() {
                     phoneNumber: e.target.value,
                   })
                 }
+                disabled={isUpdatingProfile}
               />
 
-              <div className="pt-1">
+              <div className="pt-3">
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.98]"
+                  disabled={isUpdatingProfile}
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center gap-2"
                   style={{
                     background: "linear-gradient(135deg,#7c3aed,#06b6d4)",
                   }}
                 >
-                  Save Changes
+                  {isUpdatingProfile ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Changes"
+                  )}
                 </button>
               </div>
             </form>
@@ -427,6 +479,7 @@ export function Settings() {
                 onChange={(e) =>
                   setPasswordData({ ...passwordData, current: e.target.value })
                 }
+                disabled={isChangingPassword}
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
@@ -437,6 +490,7 @@ export function Settings() {
                   onChange={(e) =>
                     setPasswordData({ ...passwordData, new: e.target.value })
                   }
+                  disabled={isChangingPassword}
                 />
                 <Input
                   label="Confirm Password"
@@ -449,17 +503,26 @@ export function Settings() {
                       confirm: e.target.value,
                     })
                   }
+                  disabled={isChangingPassword}
                 />
               </div>
               <div className="pt-1">
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.98]"
+                  disabled={isChangingPassword}
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center gap-2"
                   style={{
                     background: "linear-gradient(135deg,#7c3aed,#06b6d4)",
                   }}
                 >
-                  Update Password
+                  {isChangingPassword ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    "Update Password"
+                  )}
                 </button>
               </div>
             </form>
@@ -486,7 +549,8 @@ export function Settings() {
                         currency: e.target.value,
                       })
                     }
-                    className="w-full rounded-xl px-4 py-3 text-sm text-white font-normal bg-[#1e2535] border border-[#2a3347] outline-none transition-all hover:border-[#3d4f6e] focus:border-violet-500/70 focus:ring-2 focus:ring-violet-500/15 appearance-none cursor-pointer"
+                    disabled={isSavingPreferences}
+                    className="w-full rounded-xl px-4 py-3 text-sm text-white font-normal bg-[#1e2535] border border-[#2a3347] outline-none transition-all hover:border-[#3d4f6e] focus:border-violet-500/70 focus:ring-2 focus:ring-violet-500/15 appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{ colorScheme: "dark" }}
                   >
                     {currencyOptions.map((o) => (
@@ -513,7 +577,8 @@ export function Settings() {
                         language: e.target.value,
                       })
                     }
-                    className="w-full rounded-xl px-4 py-3 text-sm text-white font-normal bg-[#1e2535] border border-[#2a3347] outline-none transition-all hover:border-[#3d4f6e] focus:border-violet-500/70 focus:ring-2 focus:ring-violet-500/15 appearance-none cursor-pointer"
+                    disabled={isSavingPreferences}
+                    className="w-full rounded-xl px-4 py-3 text-sm text-white font-normal bg-[#1e2535] border border-[#2a3347] outline-none transition-all hover:border-[#3d4f6e] focus:border-violet-500/70 focus:ring-2 focus:ring-violet-500/15 appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{ colorScheme: "dark" }}
                   >
                     {languageOptions.map((o) => (
@@ -531,12 +596,20 @@ export function Settings() {
               <div className="pt-1">
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.98]"
+                  disabled={isSavingPreferences}
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center gap-2"
                   style={{
                     background: "linear-gradient(135deg,#7c3aed,#06b6d4)",
                   }}
                 >
-                  Save Preferences
+                  {isSavingPreferences ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Preferences"
+                  )}
                 </button>
               </div>
             </form>
@@ -580,6 +653,208 @@ export function Settings() {
           </div>
         </div>
       </div>
+
+      {/* ── Responsive overrides for mobile (max-width: 640px) ── */}
+      <style>{`
+        @media (max-width: 640px) {
+          /* Container spacing */
+          .space-y-6 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+          }
+          .space-y-5 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+          }
+          .space-y-4 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+          }
+          .space-y-2 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+          }
+          .space-y-1\\.5 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.125rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.125rem * var(--tw-space-y-reverse));
+          }
+          .gap-6 {
+            gap: 0.75rem;
+          }
+          .gap-5 {
+            gap: 0.5rem;
+          }
+          .gap-4 {
+            gap: 0.5rem;
+          }
+          .gap-3 {
+            gap: 0.375rem;
+          }
+          .gap-2\\.5 {
+            gap: 0.25rem;
+          }
+          .gap-2 {
+            gap: 0.25rem;
+          }
+          
+          /* Padding adjustments */
+          .p-6 {
+            padding: 0.75rem;
+          }
+          .px-5 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+          }
+          .px-4 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+          }
+          .py-4 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+          }
+          .py-3\\.5 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+          }
+          .py-3 {
+            padding-top: 0.375rem;
+            padding-bottom: 0.375rem;
+          }
+          .py-2\\.5 {
+            padding-top: 0.375rem;
+            padding-bottom: 0.375rem;
+          }
+          .py-2 {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+          }
+          .pt-1 {
+            padding-top: 0.125rem;
+          }
+          .pb-2 {
+            padding-bottom: 0.25rem;
+          }
+          .pb-1 {
+            padding-bottom: 0.125rem;
+          }
+          
+          /* Margin adjustments */
+          .mb-6 {
+            margin-bottom: 0.5rem;
+          }
+          .mb-4 {
+            margin-bottom: 0.5rem;
+          }
+          .mt-1 {
+            margin-top: 0.125rem;
+          }
+          .mt-0\\.5 {
+            margin-top: 0.0625rem;
+          }
+          
+          /* Typography scaling */
+          .text-4xl {
+            font-size: 1.875rem;
+            line-height: 2.25rem;
+          }
+          .text-\\[17px\\] {
+            font-size: 0.875rem;
+          }
+          .text-xl {
+            font-size: 1.125rem;
+            line-height: 1.5rem;
+          }
+          .text-sm {
+            font-size: 0.75rem;
+            line-height: 1rem;
+          }
+          .text-xs {
+            font-size: 0.625rem;
+            line-height: 0.875rem;
+          }
+          .text-\\[11px\\] {
+            font-size: 0.5625rem;
+          }
+          
+          /* Icon sizing */
+          .w-16 {
+            width: 3rem;
+          }
+          .h-16 {
+            height: 3rem;
+          }
+          .w-11 {
+            width: 1.75rem;
+          }
+          .h-6 {
+            height: 1.25rem;
+          }
+          .w-9 {
+            width: 1.5rem;
+          }
+          .h-9 {
+            height: 1.5rem;
+          }
+          .w-6 {
+            width: 1rem;
+          }
+          .h-6 {
+            height: 1rem;
+          }
+          .w-5 {
+            width: 0.875rem;
+          }
+          .h-5 {
+            height: 0.875rem;
+          }
+          .w-4 {
+            width: 0.75rem;
+          }
+          .h-4 {
+            height: 0.75rem;
+          }
+          .w-3 {
+            width: 0.625rem;
+          }
+          .h-3 {
+            height: 0.625rem;
+          }
+          
+          /* Toggle sizing */
+          .w-11 {
+            width: 1.75rem;
+          }
+          .h-6 {
+            height: 1.25rem;
+          }
+          .left-\\[22px\\] {
+            left: 0.875rem;
+          }
+          .w-5 {
+            width: 0.875rem;
+          }
+          .h-5 {
+            height: 0.875rem;
+          }
+          
+          /* Border radius */
+          .rounded-2xl {
+            border-radius: 0.75rem;
+          }
+          .rounded-xl {
+            border-radius: 0.5rem;
+          }
+          .rounded-full {
+            border-radius: 9999px;
+          }
+        }
+      `}</style>
     </MainLayout>
   );
 }
@@ -591,21 +866,56 @@ function Toggle({
   checked: boolean;
   onChange: (v: boolean) => void;
 }) {
+  const TRACK_W = 40; // px
+  const TRACK_H = 22;
+  const KNOB = 16;
+  const GAP = 3;
+
+  const translateX = TRACK_W - KNOB - GAP * 2;
+
   return (
     <button
       type="button"
       onClick={() => onChange(!checked)}
-      className="relative shrink-0 w-11 h-6 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-violet-500/40"
+      className="relative shrink-0 rounded-full transition-all duration-300 focus:outline-none"
       style={{
+        width: TRACK_W,
+        height: TRACK_H,
         background: checked
-          ? "linear-gradient(135deg,#7c3aed,#06b6d4)"
-          : "#1e2535",
-        border: "1px solid rgba(255,255,255,0.08)",
+          ? "linear-gradient(135deg, #7c3aed, #06b6d4)"
+          : "linear-gradient(135deg, #1e2535, #2a3347)",
+        border: checked
+          ? "1px solid rgba(124,58,237,0.4)"
+          : "1px solid rgba(255,255,255,0.08)",
       }}
     >
+      {/* Knob */}
       <span
-        className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200 ${checked ? "left-[22px]" : "left-0.5"}`}
-      />
+        className="absolute rounded-full bg-white flex items-center justify-center transition-transform duration-300"
+        style={{
+          width: KNOB,
+          height: KNOB,
+          top: "50%",
+          left: GAP,
+          transform: `translateY(-50%) translateX(${checked ? translateX : 0}px)`,
+          boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+        }}
+      >
+        {checked && (
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#7c3aed"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        )}
+      </span>
     </button>
   );
 }

@@ -185,9 +185,10 @@ export const FinanceProvider = ({
   }, [isAuthenticated]);
 
   const createTransaction = async (payload: any) => {
-    await api.post("/transactions", payload);
-    await refreshAll();
-  };
+  // The interceptor handles Content-Type automatically based on payload type
+  await api.post("/transactions", payload);
+  await refreshAll();
+};
 
   const addInvestment = async (payload: any) => {
     await api.post("/investments", payload);

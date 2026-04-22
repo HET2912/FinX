@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { MainLayout } from "../components/layout/MainLayout";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
@@ -15,6 +15,9 @@ import {
   Wallet,
   Sparkles,
   TrendingUp,
+  Activity,
+  Plus,
+  Loader2,
 } from "lucide-react";
 import {
   CartesianGrid,
@@ -56,7 +59,17 @@ export function Investments() {
     null,
   );
   const [submitting, setSubmitting] = useState(false);
+  const [deletingEntryId, setDeletingEntryId] = useState<string | null>(null);
   const [form, setForm] = useState(defaultForm);
+  const [loading, setLoading] = useState(true);
+
+  // Set loading to false once data is available
+  useEffect(() => {
+    if (investments !== undefined && investmentSummary !== undefined) {
+      const timer = setTimeout(() => setLoading(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [investments, investmentSummary]);
 
   const totals = investmentSummary?.totals || {
     totalSaved: 0,
@@ -215,7 +228,17 @@ export function Investments() {
   };
 
   const onDelete = async (entryId: string) => {
+    // Show confirmation dialog
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this savings entry? This action cannot be undone.",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
+      setDeletingEntryId(entryId);
       await deleteInvestment(entryId);
       toast.success("Savings entry deleted successfully");
     } catch (err: any) {
@@ -224,6 +247,8 @@ export function Investments() {
         err?.response?.data?.message ||
         "Failed to delete entry";
       toast.error(apiError);
+    } finally {
+      setDeletingEntryId(null);
     }
   };
 
@@ -263,46 +288,169 @@ export function Investments() {
     },
   ];
 
+  // ─── Beautiful Loading Screen ──────────────────────────────────────────────────────────
+  if (loading) {
+    return (
+      <MainLayout>
+        <div className="min-h-[80vh] flex items-center justify-center px-1">
+          <div className="relative max-w-4xl w-full">
+            {/* Animated background glow */}
+            <div className="absolute inset-0 -z-10">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-emerald-600/20 via-cyan-500/20 to-violet-500/20 rounded-full blur-[120px] animate-pulse" />
+            </div>
+
+            {/* Main loading card */}
+            <div className="relative bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-8 shadow-2xl shadow-black/20">
+              {/* Decorative corner gradients */}
+              <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-tl-3xl pointer-events-none" />
+              <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-violet-500/10 to-transparent rounded-br-3xl pointer-events-none" />
+
+              <div className="flex flex-col items-center text-center">
+                {/* Animated savings icon */}
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-violet-500 rounded-full blur-xl opacity-40 animate-pulse" />
+                  <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center shadow-xl">
+                    <PiggyBank className="w-12 h-12 text-transparent bg-gradient-to-r from-emerald-400 to-violet-400 bg-clip-text animate-pulse" />
+                    {/* Orbiting dots */}
+                    <div className="absolute -top-2 -left-2 w-4 h-4 rounded-full bg-emerald-400 animate-[ping_2s_ease-in-out_infinite]" />
+                    <div className="absolute -bottom-2 -right-2 w-4 h-4 rounded-full bg-cyan-400 animate-[ping_2s_ease-in-out_infinite_0.5s]" />
+                    <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-violet-400 animate-[ping_2s_ease-in-out_infinite_1s]" />
+                  </div>
+                </div>
+
+                {/* Loading text with shimmer effect */}
+                <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400 mb-3 animate-shimmer bg-[length:200%_100%]">
+                  Loading Savings
+                </h2>
+
+                {/* Progress bar with glow */}
+                <div className="w-72 h-1.5 bg-slate-800 rounded-full overflow-hidden mb-4">
+                  <div className="h-full bg-gradient-to-r from-emerald-500 via-cyan-500 to-violet-500 rounded-full animate-[progress_2s_ease-in-out_infinite] w-1/2" />
+                </div>
+
+                {/* Dynamic loading messages */}
+                <div className="space-y-1 mb-6">
+                  <p className="text-slate-400 text-sm flex items-center justify-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="animate-pulse">
+                      Fetching your savings data...
+                    </span>
+                  </p>
+                  <p className="text-slate-500 text-xs">
+                    Preparing your financial overview
+                  </p>
+                </div>
+
+                {/* KPI card skeletons */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full mb-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className="h-24 bg-slate-800/30 rounded-xl border border-slate-700/40 animate-pulse"
+                      style={{ animationDelay: `${i * 100}ms` }}
+                    />
+                  ))}
+                </div>
+
+                {/* Chart skeleton */}
+                <div className="w-full h-48 bg-slate-800/30 rounded-xl border border-slate-700/40 animate-pulse mb-4">
+                  <div className="flex items-end justify-around h-full px-4 py-3">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                      <div
+                        key={i}
+                        className="w-8 bg-gradient-to-t from-slate-700/50 to-slate-700/30 rounded-t-md"
+                        style={{ height: `${20 + i * 8}px` }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Entry list skeletons */}
+                <div className="space-y-2 w-full">
+                  {[1, 2].map((i) => (
+                    <div
+                      key={i}
+                      className="h-16 bg-slate-800/30 rounded-xl border border-slate-700/40 animate-pulse"
+                      style={{ animationDelay: `${i * 150}ms` }}
+                    />
+                  ))}
+                </div>
+
+                {/* Refresh hint */}
+                <div className="mt-6 flex items-center gap-1.5 text-slate-600 text-xs">
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
+                  <span>Loading your savings dashboard</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Custom keyframe animations */}
+        <style>{`
+          @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+          @keyframes progress {
+            0% { width: 30%; margin-left: -15%; }
+            50% { width: 70%; margin-left: 15%; }
+            100% { width: 30%; margin-left: -15%; }
+          }
+          .animate-shimmer {
+            animation: shimmer 3s linear infinite;
+          }
+        `}</style>
+      </MainLayout>
+    );
+  }
+
   return (
     <MainLayout>
       <div className="space-y-6 max-w-[1600px] mx-auto px-1">
         {/* ── Header ──────────────────────────────────────────────── */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-          <div>
-            <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest mb-1">
-              {currentMonthSummary.monthLabel}
-            </p>
-            <h1 className="text-3xl font-bold text-white tracking-tight">
-              Savings
-            </h1>
-            <p className="text-slate-400 text-sm mt-1">
+        <div className="space-y-2">
+          {/* Row 1: Heading + Combined Button */}
+          <div className="flex flex-row items-center justify-between gap-3">
+            <div>
+              <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest mb-1">
+                {currentMonthSummary.monthLabel}
+              </p>
+              <h1 className="text-3xl font-bold text-white tracking-tight">
+                Savings
+              </h1>
+            </div>
+
+            {/* Combined Dropdown Button */}
+            <div className="relative flex-shrink-0">
+              <Button
+                onClick={() => openModal("deposit")}
+                disabled={
+                  Number(currentMonthSummary.remainingAmount) <= 0 &&
+                  Number(availableBalance) <= 0
+                }
+                className="group relative overflow-hidden inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white border-0 shadow-xl shadow-violet-500/30 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                <Plus className="w-5 h-5 relative z-10" />
+                <span className="relative z-10 hidden sm:inline">
+                  Manage Savings
+                </span>
+                <span className="relative z-10 sm:hidden">Manage Savings</span>
+              </Button>
+            </div>
+          </div>
+
+          {/* Row 2: Description paragraph + Quick action buttons */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <p className="text-slate-400 text-sm">
               Save from this month's net and manage your savings balance
             </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Button
-              onClick={() => openModal("deposit")}
-              disabled={Number(currentMonthSummary.remainingAmount) <= 0}
-              className="group relative overflow-hidden inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white border-0 shadow-xl shadow-violet-500/30 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              <ArrowUpCircle className="w-4 h-4 relative z-10" />
-              <span className="relative z-10">Add Savings</span>
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => openModal("withdrawal")}
-              disabled={Number(availableBalance) <= 0}
-              className="inline-flex items-center justify-center gap-2 bg-slate-800/60 border border-slate-700/60 text-slate-300 hover:bg-slate-700/60 hover:text-white disabled:opacity-50 transition-all"
-            >
-              <ArrowDownCircle className="w-4 h-4" />
-              <span>Use Savings</span>
-            </Button>
           </div>
         </div>
 
         {/* ── Monthly Capacity Card ───────────────────────────────── */}
-        <div className="bg-slate-900/60 border border-slate-800/60 rounded-2xl p-5">
+        <div className="bg-slate-900/60 border border-slate-800/60 rounded-2xl p-5 mt-6 sm:mt-4">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-0.5 h-4 bg-gradient-to-b from-emerald-500 to-cyan-400 rounded-full" />
             <h3 className="text-sm font-semibold text-white">
@@ -313,7 +461,7 @@ export function Investments() {
             Savings can only come from this month's remaining net amount. Using
             savings reduces your saved balance.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <MiniStat
               label="Net This Month"
               value={formatCurrency(currentMonthSummary.netAmount)}
@@ -353,7 +501,7 @@ export function Investments() {
             Funds moved into goals stay inside savings but cannot be used from
             here until the goal is deleted.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-2 gap-3">
             <MiniStat
               label="Locked In Goals"
               value={formatCurrency(lockedGoalSavings)}
@@ -388,10 +536,12 @@ export function Investments() {
           )}
 
         {/* ── KPI Cards ───────────────────────────────────────────── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {stats.map((stat) => (
-            <KpiCard key={stat.title} {...stat} />
-          ))}
+        <div className="bg-slate-900/60 border border-slate-800/60 rounded-2xl p-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {stats.map((stat) => (
+              <KpiCard key={stat.title} {...stat} />
+            ))}
+          </div>
         </div>
 
         {/* ── Savings Activity Chart ───────────────────────────────── */}
@@ -462,19 +612,22 @@ export function Investments() {
         </div>
 
         {/* ── Savings Entries List ────────────────────────────────── */}
-        <div className="bg-slate-900/60 border border-slate-800/60 rounded-2xl p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-0.5 h-4 bg-gradient-to-b from-violet-500 to-cyan-400 rounded-full" />
-            <h3 className="text-sm font-semibold text-white">
+        <div className="bg-slate-900/60 border border-slate-800/60 rounded-2xl p-4 sm:p-5">
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-1 h-5 bg-gradient-to-b from-violet-500 to-cyan-400 rounded-full" />
+            <h3 className="text-base sm:text-sm font-semibold text-white">
               Savings Entries
             </h3>
           </div>
-          <div className="space-y-2">
+
+          {/* Content */}
+          <div className="space-y-3 sm:space-y-0 sm:divide-y sm:divide-slate-700/50">
             {investments.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 text-slate-500 text-sm text-center">
-                <PiggyBank className="w-8 h-8 text-slate-700 mb-2" />
-                <p>No savings entries yet</p>
-                <p className="text-slate-500 text-xs mt-1">
+              <div className="flex flex-col items-center justify-center py-12 text-slate-500 text-center">
+                <PiggyBank className="w-10 h-10 text-slate-700 mb-3" />
+                <p className="text-base">No savings entries yet</p>
+                <p className="text-sm mt-1.5">
                   Start by adding savings from your monthly net amount
                 </p>
               </div>
@@ -484,15 +637,19 @@ export function Investments() {
                   entry.amount ?? entry.investedAmount ?? 0,
                 );
                 const isWithdrawal = entry.entryType === "withdrawal";
+                const isDeleting = deletingEntryId === entry._id;
 
                 return (
                   <div
                     key={entry._id}
-                    className="group flex flex-col gap-4 rounded-xl bg-slate-800/40 border border-slate-700/30 p-4 transition-all hover:border-slate-600/50 hover:bg-slate-800/60 lg:flex-row lg:items-center lg:justify-between"
+                    className={`group bg-slate-800/40 sm:bg-transparent border border-slate-800/50 sm:border-0 rounded-xl sm:rounded-none p-3 sm:p-4 transition-all duration-200 ${
+                      isDeleting ? "opacity-50 pointer-events-none" : ""
+                    }`}
                   >
-                    <div className="flex items-start gap-4">
+                    <div className="grid grid-cols-[auto_1fr_auto] grid-rows-2 gap-x-3 gap-y-0 items-center">
+                      {/* Icon */}
                       <div
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                        className={`row-span-2 w-12 h-12 rounded-xl flex items-center justify-center ${
                           isWithdrawal
                             ? "bg-rose-500/10 border border-rose-500/20"
                             : "bg-emerald-500/10 border border-emerald-500/20"
@@ -501,69 +658,87 @@ export function Investments() {
                         {isWithdrawal ? (
                           <Wallet className="w-5 h-5 text-rose-400" />
                         ) : (
-                          <PiggyBank className="w-5 h-5 text-emerald-400" />
+                          <PiggyBank className="w-6 h-7 text-emerald-400" />
                         )}
                       </div>
-                      <div>
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <h4 className="text-slate-200 text-sm font-medium">
-                            {entry.name}
-                          </h4>
-                          <span
-                            className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                              isWithdrawal
-                                ? "bg-rose-500/10 text-rose-300 border border-rose-500/30"
-                                : "bg-emerald-500/10 text-emerald-300 border border-emerald-500/30"
-                            }`}
-                          >
-                            {isWithdrawal ? "Used Savings" : "Added to Savings"}
-                          </span>
-                        </div>
-                        <p className="text-slate-500 text-xs mt-1">
+
+                      {/* Row 1 - Name */}
+                      <h4 className="text-slate-200 text-base font-semibold truncate">
+                        {entry.name}
+                      </h4>
+
+                      {/* Row 1 - Amount */}
+                      <p
+                        className={`text-base font-bold text-right ${
+                          isWithdrawal ? "text-rose-400" : "text-emerald-400"
+                        }`}
+                      >
+                        {isWithdrawal ? "-" : "+"}
+                        {formatCurrency(amount)}
+                      </p>
+
+                      {/* Row 2 - Meta */}
+                      <div className="flex items-center gap-2 text-sm text-slate-400">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                            isWithdrawal
+                              ? "bg-rose-500/10 text-rose-300 border border-rose-500/30"
+                              : "bg-emerald-500/10 text-emerald-300 border border-emerald-500/30"
+                          }`}
+                        >
+                          {isWithdrawal ? "Used" : "Saved"}
+                        </span>
+
+                        <span>
                           {new Date(entry.date).toLocaleDateString("en-US", {
                             month: "short",
                             day: "numeric",
-                            year: "numeric",
                           })}
-                          {!isWithdrawal &&
-                            ` • ${entry.durationMonths || 1} month plan`}
-                        </p>
-                        {entry.notes && (
-                          <p className="text-slate-400 text-xs mt-1.5 italic">
-                            "{entry.notes}"
-                          </p>
-                        )}
+                        </span>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <p className="text-slate-500 text-xs">Amount</p>
-                        <p
-                          className={`text-sm font-bold ${
-                            isWithdrawal ? "text-rose-400" : "text-emerald-400"
-                          }`}
-                        >
-                          {isWithdrawal ? "-" : "+"}
-                          {formatCurrency(amount)}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-1">
+
+                      {/* Row 2 - Actions */}
+                      <div className="flex items-center gap-2 justify-end">
                         <button
                           onClick={() =>
                             openModal(entry.entryType || "deposit", entry)
                           }
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700/40 transition-colors"
+                          disabled={isDeleting}
+                          className="p-2 rounded-lg border border-slate-700/60 text-slate-300 hover:text-white hover:border-slate-500 hover:bg-slate-700/40 transition disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <Pencil className="w-4 h-4" />
+                          <Pencil className="h-5 w-4" />
                         </button>
+
                         <button
                           onClick={() => onDelete(entry._id)}
-                          className="p-1.5 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors"
+                          disabled={isDeleting}
+                          className="p-2 rounded-lg border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 hover:border-rose-400 transition disabled:opacity-50 disabled:cursor-not-allowed relative"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          {isDeleting ? (
+                            <Loader2 className="h-5 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-5 w-4" />
+                          )}
                         </button>
                       </div>
                     </div>
+
+                    {/* Notes (optional, below grid) */}
+                    {entry.notes && (
+                      <p className="text-slate-400 text-xs italic mt-2 line-clamp-2 pl-12">
+                        "{entry.notes}"
+                      </p>
+                    )}
+
+                    {/* Loading overlay for deleting entry */}
+                    {isDeleting && (
+                      <div className="absolute inset-0 bg-slate-900/50 rounded-xl flex items-center justify-center backdrop-blur-[2px]">
+                        <div className="flex items-center gap-2 text-xs text-rose-400">
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Deleting...</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })
@@ -582,15 +757,16 @@ export function Investments() {
                 ? "Edit Savings Entry"
                 : "Add Savings"
           }
-          size="md"
+          size="sm"
         >
-          <form onSubmit={onSubmit} className="space-y-4">
+          <form onSubmit={onSubmit} className="space-y-4 p-1">
             <Select
               label="Entry Type"
               options={entryTypeOptions}
               value={form.entryType}
               onChange={(e) => setForm({ ...form, entryType: e.target.value })}
             />
+
             <Input
               label={
                 form.entryType === "withdrawal" ? "Used For" : "Saving Purpose"
@@ -604,35 +780,37 @@ export function Investments() {
               }
               required
             />
-            <div className="rounded-xl bg-slate-900/80 border border-slate-700/60 p-3">
+
+            <div className="rounded-lg bg-slate-900/80 border border-slate-700/60 p-3">
               {form.entryType === "withdrawal" ? (
                 <>
                   <p className="text-slate-300 text-xs flex items-center gap-1.5">
-                    <Wallet className="w-3.5 h-3.5 text-amber-400" />
-                    Available to use:{" "}
+                    <Wallet className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>Available to use: </span>
                     <span className="text-amber-300 font-medium">
                       {formatCurrency(availableSavingsToUse)}
                     </span>
                   </p>
-                  <p className="text-slate-500 text-xs mt-0.5">
+                  <p className="text-slate-500 text-[10px] mt-1 leading-relaxed">
                     Goal-locked money is excluded from this amount.
                   </p>
                 </>
               ) : (
                 <>
                   <p className="text-slate-300 text-xs flex items-center gap-1.5">
-                    <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-                    Available to save this month:{" "}
+                    <TrendingUp className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>Available to save this month: </span>
                     <span className="text-emerald-300 font-medium">
                       {formatCurrency(allowedToSave)}
                     </span>
                   </p>
-                  <p className="text-slate-500 text-xs mt-0.5">
+                  <p className="text-slate-500 text-[10px] mt-1 leading-relaxed">
                     From remaining monthly net after income & expenses.
                   </p>
                 </>
               )}
             </div>
+
             <Input
               label="Amount"
               type="number"
@@ -646,6 +824,7 @@ export function Investments() {
               onChange={(e) => setForm({ ...form, amount: e.target.value })}
               required
             />
+
             {form.entryType === "deposit" && (
               <Input
                 label="For How Many Months"
@@ -658,6 +837,7 @@ export function Investments() {
                 required
               />
             )}
+
             <Input
               label="Date"
               type="date"
@@ -665,24 +845,26 @@ export function Investments() {
               onChange={(e) => setForm({ ...form, date: e.target.value })}
               required
             />
+
             <Input
               label="Comment"
               value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
               placeholder="Optional note"
             />
-            <div className="flex gap-3 pt-1">
+
+            <div className="flex gap-3 pt-2">
               <button
                 type="button"
                 onClick={closeModal}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-slate-900/80 border border-slate-700/60 text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all active:scale-[0.98]"
+                className="flex-1 py-2.5 rounded-lg text-sm font-semibold bg-slate-900/80 border border-slate-700/60 text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all active:scale-[0.98]"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{
                   background: "linear-gradient(135deg, #7c3aed, #06b6d4)",
                 }}
@@ -697,6 +879,227 @@ export function Investments() {
           </form>
         </Modal>
       </div>
+
+      {/* ── Responsive overrides for mobile (max-width: 640px) ── */}
+      <style>{`
+        @media (max-width: 640px) {
+          /* Container spacing */
+          .space-y-6 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+          }
+          .space-y-4 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+          }
+          .space-y-2 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+          }
+          .gap-4 {
+            gap: 0.5rem;
+          }
+          .gap-3 {
+            gap: 0.375rem;
+          }
+          .gap-2 {
+            gap: 0.25rem;
+          }
+          .gap-1 {
+            gap: 0.125rem;
+          }
+          
+          /* Padding adjustments */
+          .p-5 {
+            padding: 0.75rem;
+          }
+          .p-4 {
+            padding: 0.625rem;
+          }
+          .p-3 {
+            padding: 0.5rem;
+          }
+          .p-1\\.5 {
+            padding: 0.25rem;
+          }
+          .px-2 {
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+          }
+          .py-2\\.5 {
+            padding-top: 0.375rem;
+            padding-bottom: 0.375rem;
+          }
+          .py-12 {
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+          }
+          .py-0\\.5 {
+            padding-top: 0.0625rem;
+            padding-bottom: 0.0625rem;
+          }
+          .pt-1 {
+            padding-top: 0.125rem;
+          }
+          
+          /* Margin adjustments */
+          .mb-6 {
+            margin-bottom: 0.75rem;
+          }
+          .mb-4 {
+            margin-bottom: 0.5rem;
+          }
+          .mb-3 {
+            margin-bottom: 0.375rem;
+          }
+          .mb-2 {
+            margin-bottom: 0.25rem;
+          }
+          .mb-1 {
+            margin-bottom: 0.125rem;
+          }
+          .mt-6 {
+            margin-top: 0.75rem;
+          }
+          .mt-4 {
+            margin-top: 0.5rem;
+          }
+          .mt-1\\.5 {
+            margin-top: 0.125rem;
+          }
+          .mt-1 {
+            margin-top: 0.125rem;
+          }
+          .mt-0\\.5 {
+            margin-top: 0.0625rem;
+          }
+          
+          /* Typography scaling */
+          .text-3xl {
+            font-size: 1.5rem;
+            line-height: 1.875rem;
+          }
+          .text-xl {
+            font-size: 1.125rem;
+            line-height: 1.5rem;
+          }
+          .text-base {
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+          }
+          .text-sm {
+            font-size: 0.75rem;
+            line-height: 1rem;
+          }
+          .text-xs {
+            font-size: 0.625rem;
+            line-height: 0.875rem;
+          }
+          
+          /* Icon sizing */
+          .w-12 {
+            width: 2rem;
+          }
+          .h-12 {
+            height: 2rem;
+          }
+          .w-10 {
+            width: 1.75rem;
+          }
+          .h-10 {
+            height: 1.75rem;
+          }
+          .w-9 {
+            width: 1.5rem;
+          }
+          .h-9 {
+            height: 1.5rem;
+          }
+          .w-8 {
+            width: 1.25rem;
+          }
+          .h-8 {
+            height: 1.25rem;
+          }
+          .w-5 {
+            width: 0.875rem;
+          }
+          .h-5 {
+            height: 0.875rem;
+          }
+          .w-4 {
+            width: 0.75rem;
+          }
+          .h-4 {
+            height: 0.75rem;
+          }
+          .w-3\\.5 {
+            width: 0.75rem;
+          }
+          .h-3\\.5 {
+            height: 0.75rem;
+          }
+          .w-3 {
+            width: 0.625rem;
+          }
+          .h-3 {
+            height: 0.625rem;
+          }
+          .w-1\\.5 {
+            width: 0.25rem;
+          }
+          .h-1\\.5 {
+            height: 0.25rem;
+          }
+          .w-0\\.5 {
+            width: 0.125rem;
+          }
+          .h-4 {
+            height: 0.5rem;
+          }
+          
+          /* Height adjustments */
+          .h-\\[280px\\] {
+            height: 200px;
+          }
+          .h-48 {
+            height: 8rem;
+          }
+          .h-24 {
+            height: 4rem;
+          }
+          .h-16 {
+            height: 3rem;
+          }
+          
+          /* Chart specific */
+          .recharts-responsive-container {
+            font-size: 0.625rem;
+          }
+          
+          /* Border radius */
+          .rounded-2xl {
+            border-radius: 0.75rem;
+          }
+          .rounded-xl {
+            border-radius: 0.5rem;
+          }
+          .rounded-lg {
+            border-radius: 0.375rem;
+          }
+          .rounded-full {
+            border-radius: 9999px;
+          }
+          
+          /* Mini stat card adjustments */
+          .text-base {
+            font-size: 0.875rem;
+          }
+        }
+      `}</style>
     </MainLayout>
   );
 }
@@ -741,54 +1144,30 @@ function KpiCard({
   const accentMap = {
     emerald: {
       icon: "text-emerald-400",
-      bg: "bg-emerald-500/10",
-      border: "border-emerald-500/20",
-      text: "text-emerald-400",
-      grad: "from-emerald-500/10 to-transparent",
+      value: "text-emerald-300",
     },
     amber: {
       icon: "text-amber-400",
-      bg: "bg-amber-500/10",
-      border: "border-amber-500/20",
-      text: "text-amber-400",
-      grad: "from-amber-500/10 to-transparent",
+      value: "text-amber-300",
     },
     violet: {
       icon: "text-violet-400",
-      bg: "bg-violet-500/10",
-      border: "border-violet-500/20",
-      text: "text-violet-400",
-      grad: "from-violet-500/10 to-transparent",
+      value: "text-violet-300",
     },
     cyan: {
       icon: "text-cyan-400",
-      bg: "bg-cyan-500/10",
-      border: "border-cyan-500/20",
-      text: "text-cyan-400",
-      grad: "from-cyan-500/10 to-transparent",
+      value: "text-cyan-300",
     },
   };
   const c = accentMap[accent];
 
   return (
-    <div className="relative overflow-hidden bg-slate-900/60 border border-slate-800/60 rounded-2xl p-4 hover:border-slate-700/80 transition-all duration-200">
-      <div
-        className={`absolute inset-0 bg-gradient-to-br ${c.grad} opacity-60`}
-      />
-      <div className="relative flex items-start justify-between gap-2">
-        <div className="flex-1 min-w-0">
-          <p className="text-slate-500 text-xs mb-2 truncate">{title}</p>
-          <p className="text-xl font-bold text-white truncate">{value}</p>
-        </div>
-        <div
-          className={`w-9 h-9 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center flex-shrink-0`}
-        >
-          <Icon className={`w-4 h-4 ${c.icon}`} />
-        </div>
+    <div className="rounded-xl bg-slate-800/40 border border-slate-700/30 p-3">
+      <div className="flex items-center gap-2 mb-1">
+        <Icon className={`w-3.5 h-3.5 ${c.icon} flex-shrink-0`} />
+        <p className="text-slate-500 text-xs truncate">{title}</p>
       </div>
+      <p className={`text-base font-bold ${c.value}`}>{value}</p>
     </div>
   );
 }
-
-// Add missing Activity icon import (if used in empty state)
-import { Activity } from "lucide-react";

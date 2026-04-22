@@ -223,38 +223,95 @@ export function AI() {
     },
   ];
 
-  // ── Loading State ──────────────────────────────────────────────────────────
+  // ── Beautiful Loading Screen ──────────────────────────────────────────────────────────
   if (loading) {
     return (
       <MainLayout>
-        <div className="space-y-6 max-w-[1600px] mx-auto px-1">
-          <div className="animate-pulse space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-              <div className="space-y-2">
-                <div className="h-4 bg-slate-800/60 rounded w-20" />
-                <div className="h-8 bg-slate-800/60 rounded w-64" />
-                <div className="h-4 bg-slate-800/40 rounded w-80" />
+        <div className="min-h-[80vh] flex items-center justify-center px-1">
+          <div className="relative max-w-2xl w-full">
+            {/* Animated background glow */}
+            <div className="absolute inset-0 -z-10">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-violet-600/20 via-cyan-500/20 to-emerald-500/20 rounded-full blur-[120px] animate-pulse" />
+            </div>
+
+            {/* Main loading card */}
+            <div className="relative bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-10 shadow-2xl shadow-black/20">
+              {/* Decorative corner gradients */}
+              <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-violet-500/10 to-transparent rounded-tl-3xl pointer-events-none" />
+              <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-cyan-500/10 to-transparent rounded-br-3xl pointer-events-none" />
+
+              <div className="flex flex-col items-center text-center">
+                {/* Animated AI brain icon */}
+                <div className="relative mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-cyan-500 rounded-full blur-xl opacity-40 animate-pulse" />
+                  <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center shadow-xl">
+                    <Brain className="w-12 h-12 text-transparent bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text animate-pulse" />
+                    {/* Orbiting dots */}
+                    <div className="absolute -top-1 -left-1 w-3 h-3 rounded-full bg-violet-400 animate-[ping_2s_ease-in-out_infinite]" />
+                    <div className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-cyan-400 animate-[ping_2s_ease-in-out_infinite_0.5s]" />
+                    <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-emerald-400 animate-[ping_2s_ease-in-out_infinite_1s]" />
+                  </div>
+                </div>
+
+                {/* Loading text with shimmer effect */}
+                <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-cyan-400 to-emerald-400 mb-3 animate-shimmer bg-[length:200%_100%]">
+                  Analyzing Your Finances
+                </h2>
+
+                {/* Progress bar with glow */}
+                <div className="w-64 h-1.5 bg-slate-800 rounded-full overflow-hidden mb-4">
+                  <div className="h-full bg-gradient-to-r from-violet-500 via-cyan-500 to-emerald-500 rounded-full animate-[progress_2s_ease-in-out_infinite] w-1/2" />
+                </div>
+
+                {/* Dynamic loading messages */}
+                <div className="space-y-1">
+                  <p className="text-slate-400 text-sm flex items-center justify-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+                    <span className="animate-pulse">
+                      Crunching numbers with AI...
+                    </span>
+                  </p>
+                  <p className="text-slate-500 text-xs">
+                    This may take a few moments
+                  </p>
+                </div>
+
+                {/* Mini stat cards skeleton */}
+                <div className="grid grid-cols-3 gap-3 w-full mt-8">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="h-16 bg-slate-800/40 rounded-xl border border-slate-700/30 animate-pulse"
+                      style={{ animationDelay: `${i * 100}ms` }}
+                    />
+                  ))}
+                </div>
+
+                {/* Refresh hint */}
+                <div className="mt-6 flex items-center gap-1.5 text-slate-600 text-xs">
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
+                  <span>Fetching latest insights</span>
+                </div>
               </div>
-              <div className="h-10 bg-slate-800/60 rounded-xl w-32" />
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-              {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="h-28 bg-slate-900/60 rounded-2xl border border-slate-800/60"
-                />
-              ))}
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              <div className="h-80 bg-slate-900/60 rounded-2xl border border-slate-800/60" />
-              <div className="h-80 bg-slate-900/60 rounded-2xl border border-slate-800/60 lg:col-span-2" />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              <div className="h-56 bg-slate-900/60 rounded-2xl border border-slate-800/60" />
-              <div className="h-56 bg-slate-900/60 rounded-2xl border border-slate-800/60 lg:col-span-2" />
             </div>
           </div>
         </div>
+
+        {/* Custom keyframe animations */}
+        <style>{`
+          @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+          @keyframes progress {
+            0% { width: 30%; margin-left: -15%; }
+            50% { width: 70%; margin-left: 15%; }
+            100% { width: 30%; margin-left: -15%; }
+          }
+          .animate-shimmer {
+            animation: shimmer 3s linear infinite;
+          }
+        `}</style>
       </MainLayout>
     );
   }
@@ -299,30 +356,40 @@ export function AI() {
     <MainLayout>
       <div className="space-y-6 max-w-[1600px] mx-auto px-1">
         {/* ── Header ──────────────────────────────────────────────── */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-          <div>
-            <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest mb-1">
-              AI Powered
-            </p>
-            <h1 className="text-3xl font-bold text-white tracking-tight">
-              Financial Advisor
-            </h1>
-            <p className="text-slate-400 text-sm mt-1">
-              Personalized insights based on your financial data
-            </p>
+        <div className="space-y-2">
+          {/* Row 1: Heading + Button */}
+          <div className="flex flex-row items-center justify-between gap-3">
+            <div>
+              <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest mb-1">
+                AI Powered
+              </p>
+              <h1 className="text-3xl font-bold text-white tracking-tight">
+                Financial Advisor
+              </h1>
+            </div>
+            <button
+              onClick={() => generateComprehensiveInsights(true)}
+              disabled={loading}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/60 border border-slate-700/60 text-slate-300 text-sm font-medium hover:bg-slate-700/60 hover:text-white transition-all disabled:opacity-50 flex-shrink-0"
+            >
+              <RefreshCw
+                className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+              />
+              <span className="hidden xs:inline">
+                {loading ? "Analyzing..." : "Refresh Analysis"}
+              </span>
+              <span className="xs:hidden">{loading ? "..." : "Refresh"}</span>
+            </button>
           </div>
-          <button
-            onClick={() => generateComprehensiveInsights(true)}
-            disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/60 border border-slate-700/60 text-slate-300 text-sm font-medium hover:bg-slate-700/60 hover:text-white transition-all disabled:opacity-50"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-            {loading ? "Analyzing..." : "Refresh Analysis"}
-          </button>
+
+          {/* Row 2: Description paragraph */}
+          <p className="text-slate-400 text-sm">
+            Personalized insights based on your financial data
+          </p>
         </div>
 
         {/* ── KPI Cards ───────────────────────────────────────────── */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 pt-4">
           <KpiCard
             label="Total Income"
             value={formatCurrency(insights.monthlyAnalysis.income)}
@@ -655,6 +722,216 @@ export function AI() {
           </div>
         </div>
       </div>
+
+      {/* ── Responsive overrides for mobile (max-width: 640px) ── */}
+      <style>{`
+      /* Custom breakpoint for extra small screens */
+@media (min-width: 480px) {
+  .xs\:inline {
+    display: inline !important;
+  }
+}
+@media (max-width: 479px) {
+  .xs\:hidden {
+    display: none !important;
+  }
+}
+        @media (max-width: 640px) {
+          /* Reduce container spacing */
+          .space-y-6 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+          }
+          .gap-5 {
+            gap: 0.75rem;
+          }
+          .gap-3 {
+            gap: 0.5rem;
+          }
+          .gap-2 {
+            gap: 0.375rem;
+          }
+          .p-5 {
+            padding: 0.75rem;
+          }
+          .p-4 {
+            padding: 0.625rem;
+          }
+          .p-3 {
+            padding: 0.5rem;
+          }
+          .p-3\.5 {
+            padding: 0.625rem;
+          }
+          .px-4 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+          }
+          .py-2 {
+            padding-top: 0.375rem;
+            padding-bottom: 0.375rem;
+          }
+          .px-3 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+          }
+          .py-1 {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+          }
+          .mb-8 {
+            margin-bottom: 1rem;
+          }
+          .mb-6 {
+            margin-bottom: 0.75rem;
+          }
+          .mb-5 {
+            margin-bottom: 0.75rem;
+          }
+          .mb-4 {
+            margin-bottom: 0.5rem;
+          }
+          .mb-3 {
+            margin-bottom: 0.375rem;
+          }
+          .mb-2 {
+            margin-bottom: 0.25rem;
+          }
+          .mb-1 {
+            margin-bottom: 0.125rem;
+          }
+          .mt-8 {
+            margin-top: 1rem;
+          }
+          .mt-6 {
+            margin-top: 0.75rem;
+          }
+          .mt-4 {
+            margin-top: 0.5rem;
+          }
+          .mt-1 {
+            margin-top: 0.125rem;
+          }
+          .rounded-2xl {
+            border-radius: 0.75rem;
+          }
+          .rounded-xl {
+            border-radius: 0.625rem;
+          }
+          .rounded-lg {
+            border-radius: 0.5rem;
+          }
+          
+          /* Typography scaling */
+          .text-3xl {
+            font-size: 1.5rem;
+            line-height: 1.875rem;
+          }
+          .text-2xl {
+            font-size: 1.25rem;
+            line-height: 1.625rem;
+          }
+          .text-xl {
+            font-size: 1.125rem;
+            line-height: 1.5rem;
+          }
+          .text-lg {
+            font-size: 1rem;
+            line-height: 1.375rem;
+          }
+          .text-base {
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+          }
+          .text-sm {
+            font-size: 0.75rem;
+            line-height: 1rem;
+          }
+          .text-xs {
+            font-size: 0.625rem;
+            line-height: 0.875rem;
+          }
+          .text-\\[9px\\] {
+            font-size: 0.5rem;
+          }
+          .text-\\[10px\\] {
+            font-size: 0.5625rem;
+          }
+          
+          /* Icon sizing */
+          .w-4 {
+            width: 0.875rem;
+          }
+          .h-4 {
+            height: 0.875rem;
+          }
+          .w-5 {
+            width: 1rem;
+          }
+          .h-5 {
+            height: 1rem;
+          }
+          .w-6 {
+            width: 1.125rem;
+          }
+          .h-6 {
+            height: 1.125rem;
+          }
+          .w-8 {
+            width: 1.25rem;
+          }
+          .h-8 {
+            height: 1.25rem;
+          }
+          .w-12 {
+            width: 1.75rem;
+          }
+          .h-12 {
+            height: 1.75rem;
+          }
+          .w-16 {
+            width: 2.25rem;
+          }
+          .h-16 {
+            height: 2.25rem;
+          }
+          .w-24 {
+            width: 3rem;
+          }
+          .h-24 {
+            height: 3rem;
+          }
+          .w-64 {
+            width: 10rem;
+          }
+          
+          /* Bar chart adjustments */
+          .h-32 {
+            height: 6rem;
+          }
+          .h-1\.5 {
+            height: 0.25rem;
+          }
+          
+          /* Spacing for specific containers */
+          .space-y-3 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+          }
+          .space-y-2 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+          }
+          
+          /* Loading screen adjustments */
+          .p-10 {
+            padding: 1.25rem;
+          }
+        }
+      `}</style>
     </MainLayout>
   );
 }

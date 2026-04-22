@@ -10,6 +10,7 @@ import {
   Bell,
   Settings,
   Sparkles,
+  Handshake,
   X,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
@@ -24,6 +25,7 @@ const navigation = [
   { name: "Goals", href: "/goals", icon: Target },
   { name: "AI Advisor", href: "/ai", icon: Sparkles },
   { name: "Group Expense", href: "/groups", icon: Users },
+  { name: "1-to-1 split", href: "/onetoone", icon: Handshake },
   { name: "Chat", href: "/chat", icon: MessageCircle },
   { name: "Notifications", href: "/notifications", icon: Bell },
   { name: "Settings", href: "/settings", icon: Settings },
@@ -72,19 +74,10 @@ export function Sidebar() {
             />
           </div>
         </Link>
-
-        {/* Only show close button on mobile */}
-        <button
-          aria-label="Close sidebar"
-          onClick={closeSidebar}
-          className="md:hidden w-9 h-9 rounded-xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-center hover:bg-slate-700/60 hover:border-slate-600/60 transition-all group"
-        >
-          <X className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
-        </button>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto custom-scrollbar">
+      <nav className="flex-1 p-4 space-y-0 overflow-y-auto custom-scrollbar">
         {navigation.map((item) => {
           const isActive = location.pathname === item.href;
           const isNotifications = item.name === "Notifications";
@@ -117,7 +110,7 @@ export function Sidebar() {
                     : "text-slate-400 group-hover:text-violet-300"
                 }`}
               />
-              <span className="flex-1 font-medium tracking-wide">
+              <span className="flex-1 font-medium tracking-wide md:text-sm">
                 {item.name}
               </span>
 
@@ -181,6 +174,16 @@ export function Sidebar() {
           </div>
         </div>
       </div>
+
+      {/* Only mobile-specific adjustments - just the sidebar width and close button visibility */}
+      <style>{`
+        @media (max-width: 768px) {
+          /* Keep sidebar readable on mobile - no text size reduction */
+          .w-72 {
+            width: 14rem;
+          }
+        }
+      `}</style>
     </aside>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MainLayout } from "../components/layout/MainLayout";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
@@ -23,6 +23,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Sparkles,
+  Tag,
 } from "lucide-react";
 
 const iconOptions = [
@@ -51,6 +52,14 @@ export function Categories() {
     color: "#7C3AED",
     type: "expense",
   });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (categories !== undefined) {
+      const timer = setTimeout(() => setLoading(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [categories]);
 
   const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,30 +128,132 @@ export function Categories() {
     return opt ? opt.icon : ShoppingBag;
   };
 
+  // ─── Beautiful Loading Screen ──────────────────────────────────────────────────────────
+  if (loading) {
+    return (
+      <MainLayout>
+        <div className="min-h-[80vh] flex items-center justify-center px-1">
+          <div className="relative max-w-2xl w-full">
+            {/* Animated background glow */}
+            <div className="absolute inset-0 -z-10">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-violet-600/20 via-cyan-500/20 to-emerald-500/20 rounded-full blur-[120px] animate-pulse" />
+            </div>
+
+            {/* Main loading card */}
+            <div className="relative bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-10 shadow-2xl shadow-black/20">
+              {/* Decorative corner gradients */}
+              <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-violet-500/10 to-transparent rounded-tl-3xl pointer-events-none" />
+              <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-cyan-500/10 to-transparent rounded-br-3xl pointer-events-none" />
+
+              <div className="flex flex-col items-center text-center">
+                {/* Animated category icon */}
+                <div className="relative mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-cyan-500 rounded-full blur-xl opacity-40 animate-pulse" />
+                  <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center shadow-xl">
+                    <Tag className="w-12 h-12 text-transparent bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text animate-pulse" />
+                    {/* Orbiting dots */}
+                    <div className="absolute -top-1 -left-1 w-3 h-3 rounded-full bg-violet-400 animate-[ping_2s_ease-in-out_infinite]" />
+                    <div className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-cyan-400 animate-[ping_2s_ease-in-out_infinite_0.5s]" />
+                    <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-emerald-400 animate-[ping_2s_ease-in-out_infinite_1s]" />
+                  </div>
+                </div>
+
+                {/* Loading text with shimmer effect */}
+                <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-cyan-400 to-emerald-400 mb-3 animate-shimmer bg-[length:200%_100%]">
+                  Loading Categories
+                </h2>
+
+                {/* Progress bar with glow */}
+                <div className="w-64 h-1.5 bg-slate-800 rounded-full overflow-hidden mb-4">
+                  <div className="h-full bg-gradient-to-r from-violet-500 via-cyan-500 to-emerald-500 rounded-full animate-[progress_2s_ease-in-out_infinite] w-1/2" />
+                </div>
+
+                {/* Dynamic loading messages */}
+                <div className="space-y-1">
+                  <p className="text-slate-400 text-sm flex items-center justify-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+                    <span className="animate-pulse">
+                      Fetching your categories...
+                    </span>
+                  </p>
+                  <p className="text-slate-500 text-xs">
+                    Just a moment, we're organizing your data
+                  </p>
+                </div>
+
+                {/* Mini category card skeletons */}
+                <div className="grid grid-cols-2 gap-3 w-full mt-8">
+                  {[1, 2].map((i) => (
+                    <div
+                      key={i}
+                      className="h-20 bg-slate-800/40 rounded-xl border border-slate-700/30 animate-pulse"
+                      style={{ animationDelay: `${i * 100}ms` }}
+                    />
+                  ))}
+                </div>
+
+                {/* Refresh hint */}
+                <div className="mt-6 flex items-center gap-1.5 text-slate-600 text-xs">
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
+                  <span>Preparing your workspace</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Custom keyframe animations */}
+        <style>{`
+          @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+          @keyframes progress {
+            0% { width: 30%; margin-left: -15%; }
+            50% { width: 70%; margin-left: 15%; }
+            100% { width: 30%; margin-left: -15%; }
+          }
+          .animate-shimmer {
+            animation: shimmer 3s linear infinite;
+          }
+        `}</style>
+      </MainLayout>
+    );
+  }
+
   return (
     <MainLayout>
       <div className="space-y-6 max-w-[1600px] mx-auto px-1">
         {/* ── Header ──────────────────────────────────────────────── */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-          <div>
-            <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest mb-1">
-              Organize
-            </p>
-            <h1 className="text-3xl font-bold text-white tracking-tight">
-              Categories
-            </h1>
-            <p className="text-slate-400 text-sm mt-1">
-              Customize your income and expense categories
-            </p>
+        {/* ── Header ──────────────────────────────────────────────── */}
+        <div className="space-y-2">
+          {/* Row 1: Heading + Button */}
+          <div className="flex flex-row items-center justify-between gap-3">
+            <div>
+              <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest mb-1">
+                Organize
+              </p>
+              <h1 className="text-3xl font-bold text-white tracking-tight">
+                Categories
+              </h1>
+            </div>
+            <Button
+              onClick={() => setIsAddModalOpen(true)}
+              className="group relative overflow-hidden inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white border-0 shadow-xl shadow-violet-500/30 transition-all duration-300 hover:scale-[1.02] flex-shrink-0"
+            >
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+              <Plus className="w-4 h-4 relative z-10" />
+              <span className="relative z-10 hidden xs:inline">
+                Add Category
+              </span>
+              <span className="relative z-10 xs:hidden">Add Category</span>
+            </Button>
           </div>
-          <Button
-            onClick={() => setIsAddModalOpen(true)}
-            className="group relative overflow-hidden inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white border-0 shadow-xl shadow-violet-500/30 transition-all duration-300 hover:scale-[1.02]"
-          >
-            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-            <Plus className="w-4 h-4 relative z-10" />
-            <span className="relative z-10">Add Category</span>
-          </Button>
+
+          {/* Row 2: Description paragraph */}
+          <p className="text-slate-400 text-sm">
+            Customize your income and expense categories
+          </p>
         </div>
 
         {/* ── Expense Categories Section ──────────────────────────── */}
@@ -157,15 +268,17 @@ export function Categories() {
         />
 
         {/* ── Income Categories Section ───────────────────────────── */}
-        <Section
-          title="Income Categories"
-          icon={ArrowUpRight}
-          accentColor="emerald"
-          categories={categories.filter((cat) => cat.type === "income")}
-          getIcon={getIcon}
-          onEdit={openEditModal}
-          deleteCategory={deleteCategory}
-        />
+        <div className="pt-6 sm:pt-8">
+          <Section
+            title="Income Categories"
+            icon={ArrowUpRight}
+            accentColor="emerald"
+            categories={categories.filter((cat) => cat.type === "income")}
+            getIcon={getIcon}
+            onEdit={openEditModal}
+            deleteCategory={deleteCategory}
+          />
+        </div>
 
         {/* ── Add Category Modal ──────────────────────────────────── */}
         <Modal
@@ -463,6 +576,221 @@ export function Categories() {
           </form>
         </Modal>
       </div>
+
+      {/* ── Responsive overrides for mobile (max-width: 640px) ── */}
+      <style>{`
+        @media (max-width: 640px) {
+          /* Reduce container spacing */
+          .space-y-6 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+          }
+          .space-y-4 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+          }
+          .gap-5 {
+            gap: 0.75rem;
+          }
+          .gap-3 {
+            gap: 0.5rem;
+          }
+          .gap-2 {
+            gap: 0.375rem;
+          }
+          .p-5 {
+            padding: 0.75rem;
+          }
+          .p-4 {
+            padding: 0.625rem;
+          }
+          .p-3 {
+            padding: 0.5rem;
+          }
+          .p-12 {
+            padding: 1.5rem;
+          }
+          .px-4 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+          }
+          .py-2\.5 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+          }
+          .py-2 {
+            padding-top: 0.375rem;
+            padding-bottom: 0.375rem;
+          }
+          .px-3 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+          }
+          .py-1\.5 {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+          }
+          .mb-8 {
+            margin-bottom: 1rem;
+          }
+          .mb-6 {
+            margin-bottom: 0.75rem;
+          }
+          .mb-4 {
+            margin-bottom: 0.5rem;
+          }
+          .mb-3 {
+            margin-bottom: 0.375rem;
+          }
+          .mb-2 {
+            margin-bottom: 0.25rem;
+          }
+          .mb-1 {
+            margin-bottom: 0.125rem;
+          }
+          .mt-8 {
+            margin-top: 1rem;
+          }
+          .mt-6 {
+            margin-top: 0.75rem;
+          }
+          .mt-4 {
+            margin-top: 0.5rem;
+          }
+          .mt-1 {
+            margin-top: 0.125rem;
+          }
+          .pt-3 {
+            padding-top: 0.5rem;
+          }
+          .pt-1 {
+            padding-top: 0.25rem;
+          }
+          .rounded-2xl {
+            border-radius: 0.75rem;
+          }
+          .rounded-xl {
+            border-radius: 0.625rem;
+          }
+          .rounded-lg {
+            border-radius: 0.5rem;
+          }
+          
+          /* Typography scaling */
+          .text-3xl {
+            font-size: 1.5rem;
+            line-height: 1.875rem;
+          }
+          .text-2xl {
+            font-size: 1.25rem;
+            line-height: 1.625rem;
+          }
+          .text-xl {
+            font-size: 1.125rem;
+            line-height: 1.5rem;
+          }
+          .text-lg {
+            font-size: 1rem;
+            line-height: 1.375rem;
+          }
+          .text-base {
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+          }
+          .text-sm {
+            font-size: 0.75rem;
+            line-height: 1rem;
+          }
+          .text-xs {
+            font-size: 0.625rem;
+            line-height: 0.875rem;
+          }
+          
+          /* Icon sizing */
+          .w-4 {
+            width: 0.875rem;
+          }
+          .h-4 {
+            height: 0.875rem;
+          }
+          .w-5 {
+            width: 1rem;
+          }
+          .h-5 {
+            height: 1rem;
+          }
+          .w-6 {
+            width: 1.125rem;
+          }
+          .h-6 {
+            height: 1.125rem;
+          }
+          .w-8 {
+            width: 1.25rem;
+          }
+          .h-8 {
+            height: 1.25rem;
+          }
+          .w-12 {
+            width: 2rem;
+          }
+          .h-12 {
+            height: 2rem;
+          }
+          .w-16 {
+            width: 2.25rem;
+          }
+          .h-16 {
+            height: 2.25rem;
+          }
+          .w-24 {
+            width: 3rem;
+          }
+          .h-24 {
+            height: 3rem;
+          }
+          .w-64 {
+            width: 10rem;
+          }
+          .w-3\.5 {
+            width: 0.75rem;
+          }
+          .h-3\.5 {
+            height: 0.75rem;
+          }
+          .w-1\.5 {
+            width: 0.25rem;
+          }
+          .h-1\.5 {
+            height: 0.25rem;
+          }
+          
+          /* Specific adjustments */
+          .h-20 {
+            height: 3.5rem;
+          }
+          .min-h-\\[80vh\\] {
+            min-height: 70vh;
+          }
+          
+          /* Modal adjustments */
+          .space-y-4 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+          }
+          
+          /* Grid adjustments for category cards */
+          .grid-cols-5 {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+          }
+          .grid-cols-8 {
+            grid-template-columns: repeat(8, minmax(0, 1fr));
+          }
+        }
+      `}</style>
     </MainLayout>
   );
 }
@@ -485,9 +813,12 @@ function Section({
   onEdit: (category: any) => void;
   deleteCategory: (id: string) => void;
 }) {
-  const accentText = accentColor === "rose" ? "text-rose-400" : "text-emerald-400";
-  const accentBorder = accentColor === "rose" ? "border-rose-500/20" : "border-emerald-500/20";
-  const accentBg = accentColor === "rose" ? "bg-rose-500/10" : "bg-emerald-500/10";
+  const accentText =
+    accentColor === "rose" ? "text-rose-400" : "text-emerald-400";
+  const accentBorder =
+    accentColor === "rose" ? "border-rose-500/20" : "border-emerald-500/20";
+  const accentBg =
+    accentColor === "rose" ? "bg-rose-500/10" : "bg-emerald-500/10";
 
   return (
     <div className="space-y-4">
@@ -498,7 +829,9 @@ function Section({
           <IconComponent className={`w-3.5 h-3.5 ${accentText}`} />
         </div>
         <h3 className="text-sm font-semibold text-white">{title}</h3>
-        <span className="text-slate-500 text-xs ml-1">({categories.length})</span>
+        <span className="text-slate-500 text-xs ml-1">
+          ({categories.length})
+        </span>
       </div>
 
       {categories.length === 0 ? (
@@ -512,7 +845,7 @@ function Section({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {categories.map((category) => {
             const IconComponent = getIcon(category.icon);
             return (

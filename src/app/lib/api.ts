@@ -13,18 +13,33 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
+  if (config.data instanceof FormData) {
+    delete config.headers["Content-Type"];
+  } else {
+    config.headers["Content-Type"] = "application/json";
+  }
+
   return config;
 });
 
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error?.response?.status === 401) {
-      localStorage.removeItem("finx_token");
-      if (!window.location.pathname.includes("/login")) {
-        window.location.href = "/login";
-      }
+    // 🚫 If no response → it's a network error, DO NOTHING
+    if (!error.response) {
+      console.log("Network error, skipping auth handling");
+      return Promise.reject(error);
     }
+
+    // if (error.response.status === 401) {
+    //   localStorage.removeItem("finx_token");
+
+    //   if (!window.location.pathname.includes("/login")) {
+    //     window.location.href = "/login";
+    //   }
+    // }
+
     return Promise.reject(error);
   },
 );

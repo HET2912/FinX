@@ -36,7 +36,7 @@ export function Login() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: "/bg.png",
+          backgroundImage: "url('/Bg.png')",
           // filter: "blur(1px)",
           transform: "scale(1.05)",
         }}
@@ -205,6 +205,108 @@ export function Login() {
           </form>
         </div>
       </div>
+
+      {/* ── Responsive overrides for mobile (max-width: 640px) ── */}
+      <style>{`
+  @media (max-width: 640px) {
+    /* Reduce form width on mobile */
+    .max-w-md {
+      max-width: 18rem;  /* 320px, down from 448px */
+    }
+    
+    /* Form card padding */
+    .p-6 {
+      padding: 1rem;
+    }
+    .md\\:p-8 {
+      padding: 1rem;
+    }
+    
+    /* Spacing adjustments */
+    .space-y-5 {
+      --tw-space-y-reverse: 0;
+      margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+      margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+    }
+    .mb-6 {
+      margin-bottom: 0.75rem;
+    }
+    .mb-1\\.5 {
+      margin-bottom: 0.25rem;
+    }
+    .mb-1 {
+      margin-bottom: 0.125rem;
+    }
+    .mt-1 {
+      margin-top: 0.125rem;
+    }
+    .pt-2 {
+      padding-top: 0.25rem;
+    }
+    .gap-2 {
+      gap: 0.25rem;
+    }
+    .mr-2 {
+      margin-right: 0.25rem;
+    }
+    
+    /* Input padding */
+    .px-3 {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+    .py-2\\.5 {
+      padding-top: 0.375rem;
+      padding-bottom: 0.375rem;
+    }
+    .p-3 {
+      padding: 0.5rem;
+    }
+    
+    /* Typography scaling */
+    .text-3xl {
+      font-size: 1.5rem;
+      line-height: 1.875rem;
+    }
+    .text-sm {
+      font-size: 0.75rem;
+      line-height: 1rem;
+    }
+    .text-xs {
+      font-size: 0.625rem;
+      line-height: 0.875rem;
+    }
+    
+    /* Icon sizing */
+    .w-4 {
+      width: 0.75rem;
+    }
+    .h-4 {
+      height: 0.75rem;
+    }
+    
+    /* Logo height */
+    .h-10 {
+      height: 2rem;
+    }
+    
+    /* Checkbox sizing */
+    .w-4 {
+      width: 0.875rem;
+    }
+    .h-4 {
+      height: 0.875rem;
+    }
+    
+    /* Border radius */
+    .rounded-2xl {
+      border-radius: 0.75rem;
+    }
+    .rounded-xl {
+      border-radius: 0.5rem;
+    }
+  }
+`}</style>
     </div>
   );
 }

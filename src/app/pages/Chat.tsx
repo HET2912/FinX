@@ -21,6 +21,7 @@ import {
   Paperclip,
   MessageSquare,
   Trash2,
+  Sparkles,
 } from "lucide-react";
 
 type ChatUser = {
@@ -141,25 +142,40 @@ export function Chat() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showChat, setShowChat] = useState(false);
   const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const socketRef = useRef<any | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const loadChatData = async () => {
-    const [users, convs] = await Promise.all([
-      getChatUsers(),
-      getChatConversations(),
-    ]);
-    setChatUsers(users);
-    setConversations(convs);
-    if (!activeChat) {
-      const firstConversation = convs[0];
-      const initialUser =
-        users.find((u) => u._id === firstConversation?.userId) ||
-        users[0] ||
-        null;
-      setActiveChat(initialUser);
+    try {
+      const [users, convs] = await Promise.all([
+        getChatUsers(),
+        getChatConversations(),
+      ]);
+      setChatUsers(users);
+      setConversations(convs);
+
+      // Only set active chat if there isn't one already selected
+      // and conversations have finished loading
+      setActiveChat((prevActive) => {
+        if (prevActive) {
+          // Check if the previously active user still exists in the loaded users
+          const stillExists = users.find((u) => u._id === prevActive._id);
+          return stillExists || null;
+        }
+
+        // No active chat, select the first conversation
+        const firstConversation = convs[0];
+        const initialUser =
+          users.find((u) => u._id === firstConversation?.userId) ||
+          users[0] ||
+          null;
+        return initialUser;
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -169,13 +185,16 @@ export function Chat() {
   };
 
   useEffect(() => {
-    loadChatData().catch(() => undefined);
+    loadChatData().catch(() => {
+      setLoading(false);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (!user) return;
     const SOCKET_URL =
-      (import.meta.env.VITE_API_URL as string) || "http://localhost:5000";
+      (import.meta.env.VITE_API_URL as string) || "http://localhost:5033";
     const socket = socketIOClient(SOCKET_URL, {
       withCredentials: true,
       auth: { token },
@@ -202,7 +221,8 @@ export function Chat() {
   useEffect(() => {
     if (!activeChat) return;
     loadMessages(activeChat._id).catch(() => undefined);
-  }, [activeChat]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeChat?._id]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -289,6 +309,112 @@ export function Chat() {
     });
     return groups;
   }, [messages]);
+
+  // ─── Beautiful Loading Screen ──────────────────────────────────────────────────────────
+  if (loading) {
+    return (
+      <MainLayout>
+        <div className="h-[calc(100vh-120px)] md:h-[calc(100vh-140px)] flex items-center justify-center">
+          <div className="relative max-w-md w-full">
+            {/* Animated background glow */}
+            <div className="absolute inset-0 -z-10">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-r from-violet-600/20 via-cyan-500/20 to-emerald-500/20 rounded-full blur-[100px] animate-pulse" />
+            </div>
+
+            {/* Main loading card */}
+            <div className="relative bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-8 shadow-2xl shadow-black/20">
+              {/* Decorative corner gradients */}
+              <div className="absolute top-0 left-0 w-24 h-24 bg-gradient-to-br from-violet-500/10 to-transparent rounded-tl-3xl pointer-events-none" />
+              <div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-cyan-500/10 to-transparent rounded-br-3xl pointer-events-none" />
+
+              <div className="flex flex-col items-center text-center">
+                {/* Animated chat bubbles */}
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-cyan-500 rounded-full blur-xl opacity-40 animate-pulse" />
+                  <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center shadow-xl">
+                    <MessageSquare className="w-10 h-10 text-transparent bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text animate-pulse" />
+                    {/* Floating chat bubbles */}
+                    <div className="absolute -top-3 -right-3 w-8 h-8 rounded-xl bg-violet-500/20 border border-violet-500/30 flex items-center justify-center animate-[float_3s_ease-in-out_infinite]">
+                      <span className="text-[8px] text-violet-300">...</span>
+                    </div>
+                    <div className="absolute -bottom-2 -left-2 w-7 h-7 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center animate-[float_3s_ease-in-out_infinite_0.5s]">
+                      <span className="text-[8px] text-cyan-300">...</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Loading text with shimmer effect */}
+                <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-cyan-400 to-emerald-400 mb-3 animate-shimmer bg-[length:200%_100%]">
+                  Loading Conversations
+                </h2>
+
+                {/* Progress bar with glow */}
+                <div className="w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden mb-4">
+                  <div className="h-full bg-gradient-to-r from-violet-500 via-cyan-500 to-emerald-500 rounded-full animate-[progress_2s_ease-in-out_infinite] w-1/2" />
+                </div>
+
+                {/* Dynamic loading messages */}
+                <div className="space-y-1">
+                  <p className="text-slate-400 text-sm flex items-center justify-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+                    <span className="animate-pulse">
+                      Fetching your messages...
+                    </span>
+                  </p>
+                  <p className="text-slate-500 text-xs">
+                    Connecting to chat server
+                  </p>
+                </div>
+
+                {/* Mini conversation skeletons */}
+                <div className="w-full mt-6 space-y-2">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-3 p-2 bg-slate-800/30 rounded-xl border border-slate-700/30 animate-pulse"
+                      style={{ animationDelay: `${i * 100}ms` }}
+                    >
+                      <div className="w-10 h-10 rounded-full bg-slate-700/50" />
+                      <div className="flex-1 space-y-1.5">
+                        <div className="h-3 bg-slate-700/50 rounded w-24" />
+                        <div className="h-2 bg-slate-700/30 rounded w-32" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Refresh hint */}
+                <div className="mt-5 flex items-center gap-1.5 text-slate-600 text-xs">
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
+                  <span>Preparing your chat experience</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Custom keyframe animations */}
+        <style>{`
+          @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+          @keyframes progress {
+            0% { width: 30%; margin-left: -15%; }
+            50% { width: 70%; margin-left: 15%; }
+            100% { width: 30%; margin-left: -15%; }
+          }
+          @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+          }
+          .animate-shimmer {
+            animation: shimmer 3s linear infinite;
+          }
+        `}</style>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -719,6 +845,219 @@ export function Chat() {
           </main>
         </div>
       </div>
+
+      {/* ── Responsive overrides for mobile (max-width: 640px) ── */}
+      <style>{`
+        @media (max-width: 640px) {
+          /* Outer container */
+          .h-\\[calc\\(100vh-120px\\)\\] {
+            height: calc(100vh - 80px);
+          }
+          
+          /* Sidebar width */
+          aside {
+            width: 100%;
+          }
+          
+          /* Sidebar header */
+          .px-4 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+          }
+          .pt-4 {
+            padding-top: 0.5rem;
+          }
+          .pb-3 {
+            padding-bottom: 0.375rem;
+          }
+          .mb-3 {
+            margin-bottom: 0.375rem;
+          }
+          
+          /* Search input */
+          .px-3 {
+            padding-left: 0.375rem;
+            padding-right: 0.375rem;
+          }
+          .py-2 {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+          }
+          .gap-2 {
+            gap: 0.25rem;
+          }
+          .text-\\[13px\\] {
+            font-size: 0.6875rem;
+          }
+          .w-\\[14px\\] {
+            width: 0.75rem;
+          }
+          .h-\\[14px\\] {
+            height: 0.75rem;
+          }
+          
+          /* Conversation items */
+          .gap-3 {
+            gap: 0.5rem;
+          }
+          .py-3 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+          }
+          .text-\\[14px\\] {
+            font-size: 0.75rem;
+          }
+          .text-\\[11px\\] {
+            font-size: 0.5625rem;
+          }
+          .text-\\[12\\.5px\\] {
+            font-size: 0.6875rem;
+          }
+          
+          /* Avatar sizes in sidebar */
+          .w-10 {
+            width: 2rem;
+          }
+          .h-10 {
+            height: 2rem;
+          }
+          
+          /* Chat header */
+          .p-1\\.5 {
+            padding: 0.25rem;
+          }
+          .-ml-1 {
+            margin-left: -0.125rem;
+          }
+          .w-5 {
+            width: 1rem;
+          }
+          .h-5 {
+            height: 1rem;
+          }
+          .w-\\[17px\\] {
+            width: 0.875rem;
+          }
+          .h-\\[17px\\] {
+            height: 0.875rem;
+          }
+          
+          /* Message bubbles */
+          .px-\\[13px\\] {
+            padding-left: 0.625rem;
+            padding-right: 0.625rem;
+          }
+          .py-\\[8px\\] {
+            padding-top: 0.375rem;
+            padding-bottom: 0.375rem;
+          }
+          .text-\\[13\\.5px\\] {
+            font-size: 0.75rem;
+          }
+          .max-w-\\[72\\%\\] {
+            max-width: 80%;
+          }
+          .mt-3 {
+            margin-top: 0.375rem;
+          }
+          
+          /* Date divider */
+          .my-4 {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+          }
+          .text-\\[11px\\] {
+            font-size: 0.5625rem;
+          }
+          .px-3 {
+            padding-left: 0.375rem;
+            padding-right: 0.375rem;
+          }
+          .py-1 {
+            padding-top: 0.125rem;
+            padding-bottom: 0.125rem;
+          }
+          
+          /* Timestamp */
+          .text-\\[10\\.5px\\] {
+            font-size: 0.5625rem;
+          }
+          .text-\\[10px\\] {
+            font-size: 0.5rem;
+          }
+          
+          /* Message input area */
+          .px-3 {
+            padding-left: 0.375rem;
+            padding-right: 0.375rem;
+          }
+          .py-3 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+          }
+          .p-2 {
+            padding: 0.25rem;
+          }
+          .w-\\[18px\\] {
+            width: 0.875rem;
+          }
+          .h-\\[18px\\] {
+            height: 0.875rem;
+          }
+          .w-9 {
+            width: 1.75rem;
+          }
+          .h-9 {
+            height: 1.75rem;
+          }
+          .w-\\[15px\\] {
+            width: 0.75rem;
+          }
+          .h-\\[15px\\] {
+            height: 0.75rem;
+          }
+          .text-\\[13\\.5px\\] {
+            font-size: 0.75rem;
+          }
+          
+          /* Empty state */
+          .w-14 {
+            width: 2.5rem;
+          }
+          .h-14 {
+            height: 2.5rem;
+          }
+          .w-16 {
+            width: 2.75rem;
+          }
+          .h-16 {
+            height: 2.75rem;
+          }
+          .w-8 {
+            width: 1.25rem;
+          }
+          .h-8 {
+            height: 1.25rem;
+          }
+          .text-\\[15px\\] {
+            font-size: 0.8125rem;
+          }
+          .text-\\[13px\\] {
+            font-size: 0.6875rem;
+          }
+          
+          /* Border radius */
+          .rounded-2xl {
+            border-radius: 0.75rem;
+          }
+          .rounded-xl {
+            border-radius: 0.5rem;
+          }
+          .rounded-lg {
+            border-radius: 0.375rem;
+          }
+        }
+      `}</style>
     </MainLayout>
   );
 }

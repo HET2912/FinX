@@ -47,7 +47,7 @@ export function Signup() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: "/bg.png",
+          backgroundImage: "url('/Bg.png')",
           // filter: "blur(1px)",
           transform: "scale(1.05)",
         }}

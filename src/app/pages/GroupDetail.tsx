@@ -19,6 +19,7 @@ import {
   Receipt,
   CreditCard,
   Shield,
+  DollarSign,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import { useFinance } from "../contexts/FinanceContext";
@@ -215,19 +216,145 @@ export function GroupDetail() {
     }
   };
 
-  if (loading)
+  // ─── Beautiful Loading Screen ──────────────────────────────────────────────────────────
+  if (loading) {
     return (
       <MainLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 rounded-full border-2 border-violet-500/30 border-t-violet-400 animate-spin" />
-            <span className="text-slate-500 text-sm tracking-wide">
-              Loading group
-            </span>
+        <div className="min-h-[80vh] flex items-center justify-center px-1">
+          <div className="relative max-w-4xl w-full">
+            {/* Animated background glow */}
+            <div className="absolute inset-0 -z-10">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-violet-600/20 via-cyan-500/20 to-emerald-500/20 rounded-full blur-[120px] animate-pulse" />
+            </div>
+
+            {/* Main loading card */}
+            <div className="relative bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-8 shadow-2xl shadow-black/20">
+              {/* Decorative corner gradients */}
+              <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-violet-500/10 to-transparent rounded-tl-3xl pointer-events-none" />
+              <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-cyan-500/10 to-transparent rounded-br-3xl pointer-events-none" />
+
+              <div className="flex flex-col items-center text-center">
+                {/* Animated group icon */}
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-cyan-500 rounded-full blur-xl opacity-40 animate-pulse" />
+                  <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center shadow-xl">
+                    <Users className="w-12 h-12 text-transparent bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text animate-pulse" />
+                    {/* Orbiting dots */}
+                    <div className="absolute -top-2 -left-2 w-4 h-4 rounded-full bg-emerald-400 animate-[ping_2s_ease-in-out_infinite]" />
+                    <div className="absolute -bottom-2 -right-2 w-4 h-4 rounded-full bg-cyan-400 animate-[ping_2s_ease-in-out_infinite_0.5s]" />
+                    <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-violet-400 animate-[ping_2s_ease-in-out_infinite_1s]" />
+                  </div>
+                </div>
+
+                {/* Loading text with shimmer effect */}
+                <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-cyan-400 to-emerald-400 mb-3 animate-shimmer bg-[length:200%_100%]">
+                  Loading Group
+                </h2>
+
+                {/* Progress bar with glow */}
+                <div className="w-72 h-1.5 bg-slate-800 rounded-full overflow-hidden mb-4">
+                  <div className="h-full bg-gradient-to-r from-violet-500 via-cyan-500 to-emerald-500 rounded-full animate-[progress_2s_ease-in-out_infinite] w-1/2" />
+                </div>
+
+                {/* Dynamic loading messages */}
+                <div className="space-y-1 mb-6">
+                  <p className="text-slate-400 text-sm flex items-center justify-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+                    <span className="animate-pulse">
+                      Fetching group details...
+                    </span>
+                  </p>
+                  <p className="text-slate-500 text-xs">
+                    Loading members, expenses, and balances
+                  </p>
+                </div>
+
+                {/* Group detail skeletons */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 w-full">
+                  {/* Members skeleton */}
+                  <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/40 animate-pulse">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-0.5 h-3 bg-gradient-to-b from-violet-500 to-cyan-400 rounded-full" />
+                      <div className="h-4 w-20 bg-slate-700/50 rounded" />
+                    </div>
+                    <div className="space-y-2">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="flex items-center gap-3 p-2">
+                          <div className="w-8 h-8 rounded-full bg-slate-700/50" />
+                          <div className="flex-1">
+                            <div className="h-3 bg-slate-700/50 rounded w-24 mb-1" />
+                            <div className="h-2 bg-slate-700/30 rounded w-32" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Expenses skeleton */}
+                  <div className="lg:col-span-2 bg-slate-800/30 rounded-xl p-4 border border-slate-700/40 animate-pulse">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-0.5 h-3 bg-gradient-to-b from-violet-500 to-cyan-400 rounded-full" />
+                      <div className="h-4 w-24 bg-slate-700/50 rounded" />
+                    </div>
+                    <div className="space-y-3">
+                      {[1, 2].map((i) => (
+                        <div
+                          key={i}
+                          className="p-3 bg-slate-800/40 rounded-xl border border-slate-700/30"
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-slate-700/50" />
+                            <div className="flex-1">
+                              <div className="h-4 bg-slate-700/50 rounded w-32 mb-2" />
+                              <div className="h-3 bg-slate-700/30 rounded w-48" />
+                            </div>
+                            <div className="h-6 w-16 bg-slate-700/50 rounded" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* KPI cards skeleton row */}
+                <div className="grid grid-cols-4 gap-3 w-full mt-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className="h-20 bg-slate-800/30 rounded-xl border border-slate-700/40 animate-pulse"
+                      style={{ animationDelay: `${i * 100}ms` }}
+                    />
+                  ))}
+                </div>
+
+                {/* Refresh hint */}
+                <div className="mt-6 flex items-center gap-1.5 text-slate-600 text-xs">
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
+                  <span>Preparing group dashboard</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* Custom keyframe animations */}
+        <style>{`
+          @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+          @keyframes progress {
+            0% { width: 30%; margin-left: -15%; }
+            50% { width: 70%; margin-left: 15%; }
+            100% { width: 30%; margin-left: -15%; }
+          }
+          .animate-shimmer {
+            animation: shimmer 3s linear infinite;
+          }
+        `}</style>
       </MainLayout>
     );
+  }
 
   if (!group)
     return (
@@ -269,24 +396,31 @@ export function GroupDetail() {
     <MainLayout>
       <div className="space-y-6 max-w-[1600px] mx-auto px-1">
         {/* ── Header ──────────────────────────────────────────────── */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-          <div className="flex items-center gap-3">
+        <div className="space-y-5">
+          {/* Row 1: Back + Title + Role + Add Expense Button */}
+          <div className="flex items-start gap-4">
+            {/* Back Button */}
             <button
               onClick={() => navigate("/groups")}
-              className="p-2 rounded-xl bg-slate-800/60 border border-slate-700/60 text-slate-400 hover:text-white hover:bg-slate-700/60 transition-colors"
+              className="mt-1 p-2 rounded-xl bg-slate-800/60 border border-slate-700/60 text-slate-400 hover:text-white hover:bg-slate-700/60 transition-colors flex-shrink-0"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
-            <div>
+
+            {/* Title Section */}
+            <div className="flex-1 min-w-0">
               <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest mb-1">
                 Group Details
               </p>
+
               <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold text-white tracking-tight">
+                <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight truncate">
                   {group.name}
                 </h1>
+
+                {/* Role Badge */}
                 <span
-                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${
+                  className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs flex-shrink-0 ${
                     isCreator
                       ? "bg-violet-500/10 border border-violet-500/20 text-violet-400"
                       : "bg-slate-800/60 border border-slate-700/60 text-slate-400"
@@ -300,28 +434,18 @@ export function GroupDetail() {
                   {isCreator ? "Owner" : "Member"}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-slate-500 text-xs mt-1">
-                <Users className="w-3.5 h-3.5" />
-                <span>{group.members?.length || 0} members</span>
-                <span className="text-slate-600">•</span>
-                <span>{expenses.length} expenses</span>
-                <span className="text-slate-600">•</span>
-                <span>{formatCurrency(totalExpenses)} total</span>
-              </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-3">
-            {isCreator && (
-              <button
-                onClick={handleDeleteGroup}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition-colors"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                Delete Group
-              </button>
+            {/* Non-owner message */}
+            {!isCreator && (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+                <Shield className="w-3.5 h-3.5" />
+                <span>Only owner can add expenses</span>
+              </div>
             )}
-            {isCreator ? (
+
+            {/* Add Expense Button - First Row */}
+            {isCreator && (
               <Button
                 onClick={() => {
                   setEditingExpense(null);
@@ -333,16 +457,51 @@ export function GroupDetail() {
                   }));
                   setIsExpenseModalOpen(true);
                 }}
-                className="group relative overflow-hidden inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white border-0 shadow-xl shadow-violet-500/30 transition-all duration-300 hover:scale-[1.02]"
+                className="group relative overflow-hidden inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white border-0 shadow-lg shadow-violet-500/20 transition-all duration-300 hover:scale-[1.03] flex-shrink-0"
               >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                 <Plus className="w-4 h-4 relative z-10" />
                 <span className="relative z-10">Add Expense</span>
               </Button>
-            ) : (
-              <div className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
-                Only owner can add expenses
+            )}
+          </div>
+
+          {/* Row 2: Stats + Delete Button */}
+          <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-900/40 border border-slate-800/60 rounded-2xl px-4 py-3">
+            {/* Stats */}
+            <div className="flex flex-wrap items-center gap-4 text-xs">
+              <div className="flex items-center gap-1.5 text-slate-400">
+                <Users className="w-4 h-4" />
+                <span>{group.members?.length || 0} members</span>
               </div>
+
+              <div className="w-px h-4 bg-slate-700/60" />
+
+              <div className="flex items-center gap-1.5 text-slate-400">
+                <DollarSign className="w-4 h-4" />
+                <span>{expenses.length} expenses</span>
+              </div>
+
+              <div className="w-px h-4 bg-slate-700/60" />
+
+              <div className="flex items-center gap-1.5">
+                <Wallet className="w-4 h-4 text-slate-400" />
+                <span className="font-semibold text-white">
+                  {formatCurrency(totalExpenses)}
+                </span>
+              </div>
+            </div>
+
+            {/* Delete Button - Second Row */}
+            {isCreator && (
+              <button
+                onClick={handleDeleteGroup}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition-colors"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Delete Group</span>
+                <span className="sm:hidden">Delete</span>
+              </button>
             )}
           </div>
         </div>
@@ -909,6 +1068,315 @@ export function GroupDetail() {
           </form>
         </Modal>
       </div>
+
+      {/* ── Responsive overrides for mobile (max-width: 640px) ── */}
+      <style>{`
+        @media (max-width: 640px) {
+          /* Container spacing */
+          .space-y-6 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+          }
+          .space-y-3 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+          }
+          .space-y-2 {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+          }
+          .gap-5 {
+            gap: 0.75rem;
+          }
+          .gap-4 {
+            gap: 0.5rem;
+          }
+          .gap-3 {
+            gap: 0.375rem;
+          }
+          .gap-2 {
+            gap: 0.25rem;
+          }
+          .gap-1\.5 {
+            gap: 0.125rem;
+          }
+          
+          /* Padding adjustments */
+          .p-5 {
+            padding: 0.75rem;
+          }
+          .p-4 {
+            padding: 0.625rem;
+          }
+          .p-3 {
+            padding: 0.5rem;
+          }
+          .p-2 {
+            padding: 0.25rem;
+          }
+          .px-5 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+          }
+          .px-3 {
+            padding-left: 0.375rem;
+            padding-right: 0.375rem;
+          }
+          .px-2\.5 {
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+          }
+          .px-2 {
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+          }
+          .px-1\.5 {
+            padding-left: 0.125rem;
+            padding-right: 0.125rem;
+          }
+          .py-12 {
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+          }
+          .py-2\.5 {
+            padding-top: 0.375rem;
+            padding-bottom: 0.375rem;
+          }
+          .py-2 {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+          }
+          .py-0\.5 {
+            padding-top: 0.0625rem;
+            padding-bottom: 0.0625rem;
+          }
+          .sm\\:p-6 {
+            padding: 0.75rem;
+          }
+          
+          /* Margin adjustments */
+          .mb-6 {
+            margin-bottom: 0.75rem;
+          }
+          .mb-5 {
+            margin-bottom: 0.75rem;
+          }
+          .mb-4 {
+            margin-bottom: 0.5rem;
+          }
+          .mb-3 {
+            margin-bottom: 0.375rem;
+          }
+          .mb-2 {
+            margin-bottom: 0.25rem;
+          }
+          .mb-1\.5 {
+            margin-bottom: 0.125rem;
+          }
+          .mb-1 {
+            margin-bottom: 0.125rem;
+          }
+          .mb-0\.5 {
+            margin-bottom: 0.0625rem;
+          }
+          .mt-6 {
+            margin-top: 0.75rem;
+          }
+          .mt-4 {
+            margin-top: 0.5rem;
+          }
+          .mt-1\.5 {
+            margin-top: 0.125rem;
+          }
+          .mt-1 {
+            margin-top: 0.125rem;
+          }
+          .mt-0\.5 {
+            margin-top: 0.0625rem;
+          }
+          .my-3 {
+            margin-top: 0.375rem;
+            margin-bottom: 0.375rem;
+          }
+          .mr-1\.5 {
+            margin-right: 0.125rem;
+          }
+          
+          /* Typography scaling */
+          .text-3xl {
+            font-size: 1.5rem;
+            line-height: 1.875rem;
+          }
+          .text-xl {
+            font-size: 1.125rem;
+            line-height: 1.5rem;
+          }
+          .text-lg {
+            font-size: 1rem;
+            line-height: 1.375rem;
+          }
+          .text-base {
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+          }
+          .text-sm {
+            font-size: 0.75rem;
+            line-height: 1rem;
+          }
+          .text-xs {
+            font-size: 0.625rem;
+            line-height: 0.875rem;
+          }
+          .text-\\[9px\\] {
+            font-size: 0.5rem;
+          }
+          .text-\\[10px\\] {
+            font-size: 0.5625rem;
+          }
+          
+          /* Icon sizing */
+          .w-14 {
+            width: 2.5rem;
+          }
+          .h-14 {
+            height: 2.5rem;
+          }
+          .w-12 {
+            width: 2rem;
+          }
+          .h-12 {
+            height: 2rem;
+          }
+          .w-10 {
+            width: 1.75rem;
+          }
+          .h-10 {
+            height: 1.75rem;
+          }
+          .w-9 {
+            width: 1.5rem;
+          }
+          .h-9 {
+            height: 1.5rem;
+          }
+          .w-8 {
+            width: 1.25rem;
+          }
+          .h-8 {
+            height: 1.25rem;
+          }
+          .w-6 {
+            width: 1rem;
+          }
+          .h-6 {
+            height: 1rem;
+          }
+          .w-5 {
+            width: 0.875rem;
+          }
+          .h-5 {
+            height: 0.875rem;
+          }
+          .w-4 {
+            width: 0.75rem;
+          }
+          .h-4 {
+            height: 0.75rem;
+          }
+          .w-3\.5 {
+            width: 0.75rem;
+          }
+          .h-3\.5 {
+            height: 0.75rem;
+          }
+          .w-3 {
+            width: 0.625rem;
+          }
+          .h-3 {
+            height: 0.625rem;
+          }
+          .w-1\.5 {
+            width: 0.25rem;
+          }
+          .h-1\.5 {
+            height: 0.25rem;
+          }
+          .w-0\.5 {
+            width: 0.125rem;
+          }
+          .h-4 {
+            height: 0.5rem;
+          }
+          
+          /* Height adjustments */
+          .h-7 {
+            height: 1.25rem;
+          }
+          .h-20 {
+            height: 3.5rem;
+          }
+          .h-3 {
+            height: 0.375rem;
+          }
+          .h-2 {
+            height: 0.25rem;
+          }
+          .max-h-\\[400px\\] {
+            max-height: 250px;
+          }
+          .max-h-\\[520px\\] {
+            max-height: 350px;
+          }
+          .max-h-\\[180px\\] {
+            max-height: 120px;
+          }
+          .min-h-\\[80vh\\] {
+            min-height: 70vh;
+          }
+          .h-64 {
+            height: 8rem;
+          }
+          
+          /* Width adjustments */
+          .w-72 {
+            width: 12rem;
+          }
+          .max-w-\\[100px\\] {
+            max-width: 60px;
+          }
+          .max-w-\\[120px\\] {
+            max-width: 70px;
+          }
+          .min-w-\\[90px\\] {
+            min-width: 60px;
+          }
+          
+          /* Border radius */
+          .rounded-2xl {
+            border-radius: 0.75rem;
+          }
+          .rounded-xl {
+            border-radius: 0.5rem;
+          }
+          .rounded-lg {
+            border-radius: 0.375rem;
+          }
+          .rounded-md {
+            border-radius: 0.25rem;
+          }
+          .rounded-full {
+            border-radius: 9999px;
+          }
+          
+          /* Grid adjustments for member split buttons */
+          .grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+      `}</style>
     </MainLayout>
   );
 }

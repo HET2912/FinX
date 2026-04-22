@@ -13,6 +13,7 @@ import { Chat } from "./pages/Chat";
 import { Notifications } from "./pages/Notifications";
 import { Settings } from "./pages/Settings";
 import { AI } from "./pages/AI";
+import { OneToOne } from "./pages/OneToOne";
 
 export const router = createBrowserRouter([
   {
@@ -74,5 +75,9 @@ export const router = createBrowserRouter([
   {
     path: "/ai",
     Component: AI,
+  },
+  {
+    path: "/onetoone",
+    Component: OneToOne,
   },
 ]);
